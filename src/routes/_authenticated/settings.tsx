@@ -104,6 +104,78 @@ function SettingsPage() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="notifications">
+          <Card>
+            <CardHeader>
+              <CardTitle>Notification preferences</CardTitle>
+              <CardDescription>
+                Choose how the platform reaches you. Preferences persist per device until the
+                notifications module ships.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {[
+                { id: "email-alerts", label: "Email alerts", hint: "Important workspace activity" },
+                { id: "push-alerts", label: "Browser push", hint: "Real-time in-app updates" },
+                { id: "digest", label: "Weekly digest", hint: "A summary every Monday" },
+              ].map((pref) => (
+                <div key={pref.id} className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <Label htmlFor={pref.id} className="text-sm font-medium">
+                      {pref.label}
+                    </Label>
+                    <p className="text-xs text-muted-foreground">{pref.hint}</p>
+                  </div>
+                  <Switch id={pref.id} defaultChecked />
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="security">
+          <Card>
+            <CardHeader>
+              <CardTitle>Security</CardTitle>
+              <CardDescription>
+                Manage the credentials protecting your workspace.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 text-sm">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-medium">Password</p>
+                  <p className="text-xs text-muted-foreground">
+                    Rotate periodically. Reset takes effect immediately.
+                  </p>
+                </div>
+                <Button asChild variant="outline" size="sm">
+                  <Link to="/reset-password">Change password</Link>
+                </Button>
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-medium">Two-factor authentication</p>
+                  <p className="text-xs text-muted-foreground">
+                    Available once the identity module ships.
+                  </p>
+                </div>
+                <Badge variant="outline">Coming soon</Badge>
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-medium">Active sessions</p>
+                  <p className="text-xs text-muted-foreground">
+                    Manage devices signed into your account.
+                  </p>
+                </div>
+                <Badge variant="outline">Coming soon</Badge>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+
         <TabsContent value="access">
           <Card>
             <CardHeader>
