@@ -1,70 +1,44 @@
 import type { Role } from "./rbac";
 
 /**
- * Session store for the frontend foundation.
- *
- * No backend is connected yet, so the session is persisted locally behind a
- * narrow interface. When Lovable Cloud auth is enabled, replace the bodies of
- * `signIn` / `signOut` / `readSession` with Supabase calls — every consumer
- * (providers, guards, navigation) reads through this module only.
+ * Session shape used across the app shell.
+ * Composed from Supabase auth user + `public.profiles` + `public.org_memberships`.
  */
-
-export const SESSION_STORAGE_KEY = "touchline.session";
+export interface Membership {
+  orgId: string;
+  orgName: string;
+  role: Role;
+  isDefault: boolean;
+}
 
 export interface Session {
   userId: string;
   email: string;
   displayName: string;
+  avatarUrl: string | null;
+  language: string;
+  timezone: string;
+  theme: string;
   role: Role;
+  organizationId: string | null;
   organizationName: string;
+  memberships: Membership[];
+  isPlatformOwner: boolean;
 }
 
-type Listener = (session: Session | null) => void;
+export const ACTIVE_ORG_STORAGE_KEY = "touchline.activeOrgId";
 
-const listeners = new Set<Listener>();
-
-function isBrowser() {
-  return typeof window !== "undefined";
-}
-
-export function readSession(): Session | null {
-  if (!isBrowser()) return null;
+export function readActiveOrgId(): string | null {
+  if (typeof window === "undefined") return null;
   try {
-    const raw = window.localStorage.getItem(SESSION_STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as Session) : null;
+    return window.localStorage.getItem(ACTIVE_ORG_STORAGE_KEY);
   } catch {
     return null;
   }
 }
 
-function write(session: Session | null) {
-  if (!isBrowser()) return;
-  if (session) {
-    window.localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
-  } else {
-    window.localStorage.removeItem(SESSION_STORAGE_KEY);
-  }
-  listeners.forEach((listener) => listener(session));
-}
-
-export function onSessionChange(listener: Listener) {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
-}
-
-export function signIn(input: { email: string; role: Role }): Session {
-  const name = input.email.split("@")[0]?.replace(/[._-]+/g, " ") ?? "User";
-  const session: Session = {
-    userId: `local-${input.role}`,
-    email: input.email,
-    displayName: name.replace(/\b\w/g, (c) => c.toUpperCase()),
-    role: input.role,
-    organizationName: "Touchline Demo Organisation",
-  };
-  write(session);
-  return session;
-}
-
-export function signOut() {
-  write(null);
+export function writeActiveOrgId(orgId: string | null) {
+  if (typeof window === "undefined") return;
+  if (orgId) window.localStorage.setItem(ACTIVE_ORG_STORAGE_KEY, orgId);
+  else window.localStorage.removeItem(ACTIVE_ORG_STORAGE_KEY);
 }

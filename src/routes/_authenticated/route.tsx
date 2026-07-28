@@ -1,22 +1,25 @@
 import { createFileRoute, Link, Outlet, redirect } from "@tanstack/react-router";
-import { readSession } from "@/lib/session";
 import { AppShell } from "@/components/layout/app-shell";
 import { ErrorBoundary } from "@/components/common/error-boundary";
 import { LoadingScreen } from "@/components/common/loading";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/common/empty-state";
 import { AlertTriangle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
- * Protected layout. Rendered client-side only: the session lives in browser
- * storage, so a server-side gate would loop on hard refresh.
+ * Protected layout. Client-only because the Supabase session lives in
+ * localStorage — SSR has no access to it and a server-side gate loops on
+ * hard refresh.
  */
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
-  beforeLoad: () => {
-    if (!readSession()) {
-      throw redirect({ to: "/auth" });
+  beforeLoad: async ({ location }) => {
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data.user) {
+      throw redirect({ to: "/auth", search: { redirect: location.href } });
     }
+    return { user: data.user };
   },
   component: AuthenticatedLayout,
   pendingComponent: () => <LoadingScreen label="Preparing your workspace" />,
