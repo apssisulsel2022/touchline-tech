@@ -87,6 +87,8 @@ export function Topbar() {
     <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background/95 px-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:px-4">
       <SidebarTrigger className="shrink-0" />
 
+      <OrgSwitcher />
+
       <nav aria-label="Breadcrumb" className="hidden min-w-0 flex-1 md:block">
         <Breadcrumb>
           <BreadcrumbList>
@@ -129,18 +131,18 @@ export function Topbar() {
           <Search className="size-4" aria-hidden />
         </Button>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative min-h-11 min-w-11"
-          aria-label="Notifications, 3 unread"
-        >
-          <Bell className="size-4" aria-hidden />
-          <span
-            aria-hidden
-            className="absolute right-2 top-2 size-2 rounded-full bg-destructive"
-          />
-        </Button>
+        <NotificationCenter
+          trigger={
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative min-h-11 min-w-11"
+              aria-label="Notifications"
+            >
+              <Bell className="size-4" aria-hidden />
+            </Button>
+          }
+        />
 
         <Button
           variant="ghost"
