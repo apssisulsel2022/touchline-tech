@@ -11,6 +11,9 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AuthProvider } from "@/providers/auth-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -77,15 +80,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
+      { title: "Touchline — Football Ecosystem Platform" },
       { name: "description", content: "SoccerOS is a SaaS platform that serves as the digital operating system for football organizations." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
+      { property: "og:title", content: "Touchline — Football Ecosystem Platform" },
       { property: "og:description", content: "SoccerOS is a SaaS platform that serves as the digital operating system for football organizations." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Lovable App" },
+      { name: "twitter:title", content: "Touchline — Football Ecosystem Platform" },
       { name: "twitter:description", content: "SoccerOS is a SaaS platform that serves as the digital operating system for football organizations." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/aab77f34-8685-4005-80e6-3e4fd6bf3b0a/id-preview-e95bf97f--5a2ba67b-6d1a-4eba-9b81-4fe8fe33f26e.lovable.app-1785231573582.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/aab77f34-8685-4005-80e6-3e4fd6bf3b0a/id-preview-e95bf97f--5a2ba67b-6d1a-4eba-9b81-4fe8fe33f26e.lovable.app-1785231573582.png" },
@@ -123,8 +126,13 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <ThemeProvider>
+        <AuthProvider>
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+          <Toaster richColors closeButton position="top-right" />
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
