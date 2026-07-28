@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Bell, LogOut, Moon, Search, Sun, User } from "lucide-react";
+import { Bell, LogOut, Moon, Search, ShieldCheck, Sun, User } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +20,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandSeparator,
 } from "@/components/ui/command";
 import {
   DropdownMenu,
@@ -30,6 +31,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { NotificationCenter } from "@/components/layout/notification-center";
+import { OrgSwitcher } from "@/components/layout/org-switcher";
 import { ROLE_NAVIGATION } from "@/lib/navigation";
 import { ROLE_LABELS } from "@/lib/rbac";
 import { useAuth } from "@/providers/auth-provider";
