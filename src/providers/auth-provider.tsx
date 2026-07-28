@@ -37,7 +37,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     setSession(readSession());
     setIsLoading(false);
-    return onSessionChange(setSession);
+    const unsubscribe = onSessionChange(setSession);
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const permissions = React.useMemo(
