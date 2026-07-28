@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { CircleDot } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -115,10 +115,24 @@ function AuthPage() {
               </Select>
             </div>
           </CardContent>
-          <CardFooter className="mt-6">
+          <CardFooter className="mt-6 flex-col items-stretch gap-3">
             <Button type="submit" className="w-full">
               Continue to workspace
             </Button>
+            <div className="flex items-center justify-between text-sm">
+              <Link
+                to="/forgot-password"
+                className="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+              >
+                Forgot password?
+              </Link>
+              <Link
+                to="/magic-link"
+                className="font-medium text-primary underline-offset-4 hover:underline"
+              >
+                Use a magic link
+              </Link>
+            </div>
           </CardFooter>
         </form>
       </Card>

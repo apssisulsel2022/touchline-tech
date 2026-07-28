@@ -1,6 +1,8 @@
+import * as React from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { CircleDot } from "lucide-react";
+import { CircleDot, Search } from "lucide-react";
 
+import { Input } from "@/components/ui/input";
 import {
   Sidebar,
   SidebarContent,
@@ -23,8 +25,10 @@ export function AppSidebar() {
   const collapsed = state === "collapsed";
   const { role, hasPermission, session } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [query, setQuery] = React.useState("");
 
   const groups = role ? ROLE_NAVIGATION[role] : [];
+  const q = query.trim().toLowerCase();
 
   return (
     <Sidebar collapsible="icon">
@@ -45,12 +49,30 @@ export function AppSidebar() {
             </span>
           )}
         </div>
+        {!collapsed && (
+          <div className="relative px-2 pb-1">
+            <Search
+              aria-hidden
+              className="pointer-events-none absolute left-4 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"
+            />
+            <Input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Filter navigation…"
+              aria-label="Filter navigation"
+              className="h-8 pl-7 text-sm"
+            />
+          </div>
+        )}
       </SidebarHeader>
 
       <SidebarContent>
         {groups.map((group) => {
           const items = group.items.filter(
-            (item) => !item.permission || hasPermission(item.permission),
+            (item) =>
+              (!item.permission || hasPermission(item.permission)) &&
+              (q === "" || item.title.toLowerCase().includes(q)),
           );
           if (items.length === 0) return null;
 

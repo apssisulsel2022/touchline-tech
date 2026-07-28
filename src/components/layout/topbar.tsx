@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Bell, LogOut, Moon, Search, Sun, User } from "lucide-react";
+import { Bell, LogOut, Moon, Search, ShieldCheck, Sun, User } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +20,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandSeparator,
 } from "@/components/ui/command";
 import {
   DropdownMenu,
@@ -30,6 +31,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { NotificationCenter } from "@/components/layout/notification-center";
+import { OrgSwitcher } from "@/components/layout/org-switcher";
 import { ROLE_NAVIGATION } from "@/lib/navigation";
 import { ROLE_LABELS } from "@/lib/rbac";
 import { useAuth } from "@/providers/auth-provider";
@@ -84,6 +87,8 @@ export function Topbar() {
     <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background/95 px-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:px-4">
       <SidebarTrigger className="shrink-0" />
 
+      <OrgSwitcher />
+
       <nav aria-label="Breadcrumb" className="hidden min-w-0 flex-1 md:block">
         <Breadcrumb>
           <BreadcrumbList>
@@ -126,18 +131,18 @@ export function Topbar() {
           <Search className="size-4" aria-hidden />
         </Button>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative min-h-11 min-w-11"
-          aria-label="Notifications, 3 unread"
-        >
-          <Bell className="size-4" aria-hidden />
-          <span
-            aria-hidden
-            className="absolute right-2 top-2 size-2 rounded-full bg-destructive"
-          />
-        </Button>
+        <NotificationCenter
+          trigger={
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative min-h-11 min-w-11"
+              aria-label="Notifications"
+            >
+              <Bell className="size-4" aria-hidden />
+            </Button>
+          }
+        />
 
         <Button
           variant="ghost"
@@ -179,6 +184,9 @@ export function Topbar() {
             <DropdownMenuItem onSelect={() => navigate({ to: "/settings" })}>
               <User className="size-4" aria-hidden /> Profile & settings
             </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => navigate({ to: "/reset-password" })}>
+              <ShieldCheck className="size-4" aria-hidden /> Security
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onSelect={() => {
@@ -213,6 +221,30 @@ export function Topbar() {
                 )}
               </CommandItem>
             ))}
+          </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup heading="Account">
+            <CommandItem
+              value="Profile settings"
+              onSelect={() => {
+                setCommandOpen(false);
+                navigate({ to: "/settings" });
+              }}
+            >
+              <User className="size-4" aria-hidden />
+              Profile & settings
+            </CommandItem>
+            <CommandItem
+              value="Sign out"
+              onSelect={() => {
+                setCommandOpen(false);
+                signOut();
+                navigate({ to: "/auth", replace: true });
+              }}
+            >
+              <LogOut className="size-4" aria-hidden />
+              Sign out
+            </CommandItem>
           </CommandGroup>
         </CommandList>
       </CommandDialog>
