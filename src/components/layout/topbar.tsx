@@ -184,6 +184,9 @@ export function Topbar() {
             <DropdownMenuItem onSelect={() => navigate({ to: "/settings" })}>
               <User className="size-4" aria-hidden /> Profile & settings
             </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => navigate({ to: "/reset-password" })}>
+              <ShieldCheck className="size-4" aria-hidden /> Security
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onSelect={() => {
