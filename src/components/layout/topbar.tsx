@@ -222,6 +222,30 @@ export function Topbar() {
               </CommandItem>
             ))}
           </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup heading="Account">
+            <CommandItem
+              value="Profile settings"
+              onSelect={() => {
+                setCommandOpen(false);
+                navigate({ to: "/settings" });
+              }}
+            >
+              <User className="size-4" aria-hidden />
+              Profile & settings
+            </CommandItem>
+            <CommandItem
+              value="Sign out"
+              onSelect={() => {
+                setCommandOpen(false);
+                signOut();
+                navigate({ to: "/auth", replace: true });
+              }}
+            >
+              <LogOut className="size-4" aria-hidden />
+              Sign out
+            </CommandItem>
+          </CommandGroup>
         </CommandList>
       </CommandDialog>
     </header>
