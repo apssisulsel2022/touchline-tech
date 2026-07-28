@@ -19,8 +19,13 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InvitationTokenRouteImport } from './routes/invitation.$token'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedRolesRouteImport } from './routes/_authenticated/roles'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedMembersRouteImport } from './routes/_authenticated/members'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedOrganisationsNewRouteImport } from './routes/_authenticated/organisations.new'
 
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
   id: '/unauthorized',
@@ -71,9 +76,29 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InvitationTokenRoute = InvitationTokenRouteImport.update({
+  id: '/invitation/$token',
+  path: '/invitation/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRolesRoute = AuthenticatedRolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMembersRoute = AuthenticatedMembersRouteImport.update({
+  id: '/members',
+  path: '/members',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -81,6 +106,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOrganisationsNewRoute =
+  AuthenticatedOrganisationsNewRouteImport.update({
+    id: '/organisations/new',
+    path: '/organisations/new',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -93,7 +124,12 @@ export interface FileRoutesByFullPath {
   '/session-expired': typeof SessionExpiredRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/members': typeof AuthenticatedMembersRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/roles': typeof AuthenticatedRolesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/invitation/$token': typeof InvitationTokenRoute
+  '/organisations/new': typeof AuthenticatedOrganisationsNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -106,7 +142,12 @@ export interface FileRoutesByTo {
   '/session-expired': typeof SessionExpiredRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/members': typeof AuthenticatedMembersRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/roles': typeof AuthenticatedRolesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/invitation/$token': typeof InvitationTokenRoute
+  '/organisations/new': typeof AuthenticatedOrganisationsNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -121,7 +162,12 @@ export interface FileRoutesById {
   '/session-expired': typeof SessionExpiredRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/members': typeof AuthenticatedMembersRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/roles': typeof AuthenticatedRolesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/invitation/$token': typeof InvitationTokenRoute
+  '/_authenticated/organisations/new': typeof AuthenticatedOrganisationsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -136,7 +182,12 @@ export interface FileRouteTypes {
     | '/session-expired'
     | '/unauthorized'
     | '/dashboard'
+    | '/members'
+    | '/profile'
+    | '/roles'
     | '/settings'
+    | '/invitation/$token'
+    | '/organisations/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -149,7 +200,12 @@ export interface FileRouteTypes {
     | '/session-expired'
     | '/unauthorized'
     | '/dashboard'
+    | '/members'
+    | '/profile'
+    | '/roles'
     | '/settings'
+    | '/invitation/$token'
+    | '/organisations/new'
   id:
     | '__root__'
     | '/'
@@ -163,7 +219,12 @@ export interface FileRouteTypes {
     | '/session-expired'
     | '/unauthorized'
     | '/_authenticated/dashboard'
+    | '/_authenticated/members'
+    | '/_authenticated/profile'
+    | '/_authenticated/roles'
     | '/_authenticated/settings'
+    | '/invitation/$token'
+    | '/_authenticated/organisations/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -177,6 +238,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SessionExpiredRoute: typeof SessionExpiredRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
+  InvitationTokenRoute: typeof InvitationTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -251,11 +313,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/invitation/$token': {
+      id: '/invitation/$token'
+      path: '/invitation/$token'
+      fullPath: '/invitation/$token'
+      preLoaderRoute: typeof InvitationTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/roles': {
+      id: '/_authenticated/roles'
+      path: '/roles'
+      fullPath: '/roles'
+      preLoaderRoute: typeof AuthenticatedRolesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/members': {
+      id: '/_authenticated/members'
+      path: '/members'
+      fullPath: '/members'
+      preLoaderRoute: typeof AuthenticatedMembersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -265,17 +355,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/organisations/new': {
+      id: '/_authenticated/organisations/new'
+      path: '/organisations/new'
+      fullPath: '/organisations/new'
+      preLoaderRoute: typeof AuthenticatedOrganisationsNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedMembersRoute: typeof AuthenticatedMembersRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedRolesRoute: typeof AuthenticatedRolesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedOrganisationsNewRoute: typeof AuthenticatedOrganisationsNewRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedMembersRoute: AuthenticatedMembersRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedRolesRoute: AuthenticatedRolesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedOrganisationsNewRoute: AuthenticatedOrganisationsNewRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -292,6 +397,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SessionExpiredRoute: SessionExpiredRoute,
   UnauthorizedRoute: UnauthorizedRoute,
+  InvitationTokenRoute: InvitationTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
