@@ -20,7 +20,7 @@ export const passwordSchema = z
 export const loginSchema = z.object({
   email: emailSchema,
   password: z.string().min(1, { message: "Password is required" }),
-  remember: z.boolean().optional().default(true),
+  remember: z.boolean(),
 });
 export type LoginInput = z.infer<typeof loginSchema>;
 
