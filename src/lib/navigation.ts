@@ -38,10 +38,16 @@ const OVERVIEW: NavGroup = {
   ],
 };
 
-const SETTINGS: NavGroup = {
+const WORKSPACE: NavGroup = {
   label: "Workspace",
-  items: [{ title: "Settings", to: "/settings", icon: Settings, permission: "settings:manage" }],
+  items: [
+    { title: "Members", to: "/members", icon: Users, permission: "org:manage" },
+    { title: "Roles", to: "/roles", icon: Shield, permission: "org:manage" },
+    { title: "Profile", to: "/profile", icon: Users },
+    { title: "Settings", to: "/settings", icon: Settings, permission: "settings:manage" },
+  ],
 };
+const SETTINGS = WORKSPACE;
 
 const CATALOG: Record<string, NavItem> = {
   tenants: { title: "Tenants", to: "/tenants", icon: Building2, permission: "tenants:manage", comingSoon: true },

@@ -1,6 +1,10 @@
 import * as React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { CheckCircle2, ShieldCheck } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CheckCircle2, Loader2, ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +17,9 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { changePasswordSchema } from "@/lib/validation/auth";
+import { audit } from "@/lib/audit";
 
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
@@ -27,7 +34,7 @@ export const Route = createFileRoute("/reset-password")({
   component: ResetPasswordPage,
 });
 
-function scorePassword(pw: string): { score: number; label: string } {
+function scorePassword(pw: string) {
   let score = 0;
   if (pw.length >= 8) score++;
   if (pw.length >= 12) score++;
@@ -38,28 +45,28 @@ function scorePassword(pw: string): { score: number; label: string } {
   return { score, label };
 }
 
+type FormValues = z.infer<typeof changePasswordSchema>;
+
 function ResetPasswordPage() {
   const navigate = useNavigate();
-  const [password, setPassword] = React.useState("");
-  const [confirm, setConfirm] = React.useState("");
-  const [error, setError] = React.useState<string | null>(null);
+  const form = useForm<FormValues>({
+    resolver: zodResolver(changePasswordSchema),
+    defaultValues: { password: "", confirm: "" },
+  });
   const [done, setDone] = React.useState(false);
-  const strength = scorePassword(password);
+  const strength = scorePassword(form.watch("password") ?? "");
 
-  function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
+  const onSubmit = form.handleSubmit(async ({ password }) => {
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) {
+      toast.error(error.message);
       return;
     }
-    if (password !== confirm) {
-      setError("Passwords don't match.");
-      return;
-    }
-    setError(null);
+    await audit("auth.password_changed");
     setDone(true);
-    setTimeout(() => navigate({ to: "/auth", replace: true }), 1600);
-  }
+    toast.success("Password updated");
+    setTimeout(() => navigate({ to: "/dashboard", replace: true }), 1200);
+  });
 
   return (
     <main className="grid min-h-dvh place-items-center bg-muted/40 px-4 py-10">
@@ -77,8 +84,8 @@ function ResetPasswordPage() {
             </CardTitle>
             <CardDescription>
               {done
-                ? "You'll be redirected to sign in shortly."
-                : "Use at least 8 characters. Mix letters, numbers, and symbols for a stronger password."}
+                ? "You'll be redirected to your workspace shortly."
+                : "Use at least 8 characters, with upper and lowercase letters and a number."}
             </CardDescription>
           </div>
         </CardHeader>
@@ -86,11 +93,11 @@ function ResetPasswordPage() {
         {done ? (
           <CardFooter className="flex-col items-stretch gap-2">
             <Button asChild>
-              <Link to="/auth">Go to sign in</Link>
+              <Link to="/dashboard">Continue</Link>
             </Button>
           </CardFooter>
         ) : (
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={onSubmit}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="password">New password</Label>
@@ -98,8 +105,7 @@ function ResetPasswordPage() {
                   id="password"
                   type="password"
                   autoComplete="new-password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
+                  {...form.register("password")}
                   aria-describedby="pw-strength"
                 />
                 <div
@@ -116,6 +122,11 @@ function ResetPasswordPage() {
                   </div>
                   <span className="w-20 shrink-0 tabular-nums">{strength.label}</span>
                 </div>
+                {form.formState.errors.password && (
+                  <p role="alert" className="text-sm text-destructive">
+                    {form.formState.errors.password.message}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirm">Confirm password</Label>
@@ -123,20 +134,18 @@ function ResetPasswordPage() {
                   id="confirm"
                   type="password"
                   autoComplete="new-password"
-                  value={confirm}
-                  onChange={(event) => setConfirm(event.target.value)}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={error ? "confirm-error" : undefined}
+                  {...form.register("confirm")}
                 />
-                {error && (
-                  <p id="confirm-error" role="alert" className="text-sm text-destructive">
-                    {error}
+                {form.formState.errors.confirm && (
+                  <p role="alert" className="text-sm text-destructive">
+                    {form.formState.errors.confirm.message}
                   </p>
                 )}
               </div>
             </CardContent>
             <CardFooter className="mt-6">
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting && <Loader2 className="size-4 animate-spin" />}
                 Update password
               </Button>
             </CardFooter>

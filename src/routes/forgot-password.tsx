@@ -1,6 +1,10 @@
 import * as React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { KeyRound, MailCheck } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { KeyRound, Loader2, MailCheck } from "lucide-react";
+import { toast } from "sonner";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +17,9 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { forgotSchema } from "@/lib/validation/auth";
+import { audit } from "@/lib/audit";
 
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
@@ -26,20 +33,26 @@ export const Route = createFileRoute("/forgot-password")({
   component: ForgotPasswordPage,
 });
 
-function ForgotPasswordPage() {
-  const [email, setEmail] = React.useState("");
-  const [error, setError] = React.useState<string | null>(null);
-  const [sent, setSent] = React.useState(false);
+type FormValues = z.infer<typeof forgotSchema>;
 
-  function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
-      setError("Enter a valid email address.");
-      return;
+function ForgotPasswordPage() {
+  const form = useForm<FormValues>({
+    resolver: zodResolver(forgotSchema),
+    defaultValues: { email: "" },
+  });
+  const [sent, setSent] = React.useState<string | null>(null);
+
+  const onSubmit = form.handleSubmit(async ({ email }) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    // Reveal nothing about account existence
+    setSent(email);
+    if (!error) {
+      await audit("auth.password_reset_requested", { metadata: { email } });
     }
-    setError(null);
-    setSent(true);
-  }
+    toast.success("If the email exists, a reset link is on the way.");
+  });
 
   return (
     <main className="grid min-h-dvh place-items-center bg-muted/40 px-4 py-10">
@@ -57,7 +70,7 @@ function ForgotPasswordPage() {
             </CardTitle>
             <CardDescription>
               {sent
-                ? `If an account exists for ${email}, we've sent a secure reset link. The link expires in 30 minutes.`
+                ? `If an account exists for ${sent}, we've sent a secure reset link. It expires in 60 minutes.`
                 : "Enter the email associated with your Touchline account and we'll send you a reset link."}
             </CardDescription>
           </div>
@@ -70,7 +83,7 @@ function ForgotPasswordPage() {
             </Button>
           </CardFooter>
         ) : (
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={onSubmit}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
@@ -79,20 +92,19 @@ function ForgotPasswordPage() {
                   type="email"
                   autoComplete="email"
                   placeholder="you@federation.org"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={error ? "email-error" : undefined}
+                  {...form.register("email")}
+                  aria-invalid={Boolean(form.formState.errors.email)}
                 />
-                {error && (
-                  <p id="email-error" role="alert" className="text-sm text-destructive">
-                    {error}
+                {form.formState.errors.email && (
+                  <p role="alert" className="text-sm text-destructive">
+                    {form.formState.errors.email.message}
                   </p>
                 )}
               </div>
             </CardContent>
             <CardFooter className="mt-6 flex-col items-stretch gap-2">
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting && <Loader2 className="size-4 animate-spin" />}
                 Send reset link
               </Button>
               <Button asChild variant="ghost" size="sm">
