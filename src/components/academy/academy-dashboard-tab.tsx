@@ -72,8 +72,8 @@ export function AcademyDashboardTab({ orgId }: { orgId: string }) {
   const activeSessions = (sessions.data ?? []).filter((s) => s.is_active);
   const availableFacilities = (facilities.data ?? []).filter((f) => f.status === "available");
 
-  const expiringLicences = (coaches.data ?? []).filter((c) => isExpiringSoon(c.licence_expires_at));
-  const teamsWithoutCoach = activeTeams.filter((t) => !t.coach_id);
+  const expiringLicences = (coaches.data ?? []).filter((c) => isExpiringSoon(c.license_expiry));
+  const teamsWithoutCoach = activeTeams.filter((t) => !t.head_coach_id);
   const teamsWithoutSession = activeTeams.filter(
     (t) => !activeSessions.some((s) => s.team_id === t.id),
   );
