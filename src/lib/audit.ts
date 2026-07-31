@@ -1,4 +1,14 @@
 import { supabase } from "@/integrations/supabase/client";
+import { assertTenantScope } from "@/lib/tenant";
+
+const SENSITIVE_KEYS = new Set([
+  "password",
+  "token",
+  "secret",
+  "authorization",
+  "apiKey",
+  "api_key",
+]);
 
 export type AuditAction =
   | "auth.login"
@@ -72,12 +82,28 @@ export type AuditAction =
   | "player.document_verified"
   | "player.document_removed";
 
-
 /**
  * Fire-and-forget audit log write. Failures are swallowed so audit issues never
  * block the user flow — the write is best-effort from the client and mirrored
  * server-side in future modules.
  */
+export function sanitizeAuditMetadata(metadata: Record<string, unknown> | undefined) {
+  if (!metadata || typeof metadata !== "object") return {};
+
+  const sanitized: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(metadata)) {
+    if (SENSITIVE_KEYS.has(key)) continue;
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      const nested = sanitizeAuditMetadata(value as Record<string, unknown>);
+      if (Object.keys(nested).length > 0) sanitized[key] = nested;
+      continue;
+    }
+    sanitized[key] = value;
+  }
+
+  return sanitized;
+}
+
 export async function audit(
   action: AuditAction,
   input: {
@@ -90,13 +116,16 @@ export async function audit(
   try {
     const { data: userData } = await supabase.auth.getUser();
     if (!userData.user) return;
+
+    const orgId = input.orgId ? assertTenantScope(input.orgId) : null;
+
     await supabase.from("audit_logs").insert({
       actor_user_id: userData.user.id,
-      org_id: input.orgId ?? null,
+      org_id: orgId,
       action,
       entity: input.entity ?? null,
       entity_id: input.entityId ?? null,
-      metadata: (input.metadata ?? {}) as never,
+      metadata: sanitizeAuditMetadata(input.metadata) as never,
     });
   } catch {
     /* audit is best-effort */

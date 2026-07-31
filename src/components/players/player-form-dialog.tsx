@@ -129,7 +129,7 @@ export function PlayerFormDialog({
       };
 
       if (player) {
-        const updated = await updatePlayerRecord(player.id, player.version, payload);
+        const updated = await updatePlayerRecord(orgId, player.id, player.version, payload);
         return { id: updated.id, created: false, status: updated.status };
       }
 

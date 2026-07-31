@@ -2,6 +2,7 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { assertTenantScope } from "@/lib/tenant";
 import { ageInYears } from "@/lib/validation/players";
 
 /**
@@ -34,10 +35,11 @@ export const playersQuery = (orgId: string) =>
   queryOptions({
     queryKey: playerKeys.list(orgId),
     queryFn: async (): Promise<PlayerRow[]> => {
+      const tenantId = assertTenantScope(orgId);
       const { data, error } = await supabase
         .from("players")
         .select("*")
-        .eq("org_id", orgId)
+        .eq("org_id", tenantId)
         .is("deleted_at", null)
         .order("last_name", { ascending: true });
       if (error) throw error;
@@ -50,11 +52,12 @@ export const playerQuery = (orgId: string, playerId: string) =>
   queryOptions({
     queryKey: playerKeys.detail(orgId, playerId),
     queryFn: async (): Promise<PlayerRow | null> => {
+      const tenantId = assertTenantScope(orgId);
       const { data, error } = await supabase
         .from("players")
         .select("*")
         .eq("id", playerId)
-        .eq("org_id", orgId)
+        .eq("org_id", tenantId)
         .maybeSingle();
       if (error) throw error;
       return data;
@@ -82,10 +85,12 @@ export const registrationsQuery = (orgId: string, playerId: string) =>
   queryOptions({
     queryKey: playerKeys.section(orgId, playerId, "registrations"),
     queryFn: async (): Promise<RegistrationRow[]> => {
+      const tenantId = assertTenantScope(orgId);
       const { data, error } = await supabase
         .from("player_registrations")
         .select("*")
         .eq("player_id", playerId)
+        .eq("org_id", tenantId)
         .order("registered_on", { ascending: false });
       if (error) throw error;
       return data ?? [];
@@ -97,10 +102,11 @@ export const orgRegistrationsQuery = (orgId: string) =>
   queryOptions({
     queryKey: [...playerKeys.all(orgId), "registrations"] as const,
     queryFn: async (): Promise<RegistrationRow[]> => {
+      const tenantId = assertTenantScope(orgId);
       const { data, error } = await supabase
         .from("player_registrations")
         .select("*")
-        .eq("org_id", orgId)
+        .eq("org_id", tenantId)
         .order("registered_on", { ascending: false });
       if (error) throw error;
       return data ?? [];
@@ -153,14 +159,17 @@ export class ConcurrencyError extends Error {
  * the version the editor loaded. The database trigger bumps `version`.
  */
 export async function updatePlayerRecord(
+  orgId: string,
   playerId: string,
   expectedVersion: number,
   values: Record<string, unknown>,
 ): Promise<PlayerRow> {
+  const tenantId = assertTenantScope(orgId);
   const { data, error } = await supabase
     .from("players")
     .update(values as never)
     .eq("id", playerId)
+    .eq("org_id", tenantId)
     .eq("version", expectedVersion)
     .select("*")
     .maybeSingle();
@@ -170,7 +179,8 @@ export async function updatePlayerRecord(
 }
 
 /** Soft delete keeps the historical record and its timeline intact. */
-export async function softDeletePlayer(playerId: string, actorId: string | null) {
+export async function softDeletePlayer(orgId: string, playerId: string, actorId: string | null) {
+  const tenantId = assertTenantScope(orgId);
   const { error } = await supabase
     .from("players")
     .update({
@@ -178,7 +188,8 @@ export async function softDeletePlayer(playerId: string, actorId: string | null)
       deleted_by: actorId,
       status: "archived",
     })
-    .eq("id", playerId);
+    .eq("id", playerId)
+    .eq("org_id", tenantId);
   if (error) throw error;
 }
 
