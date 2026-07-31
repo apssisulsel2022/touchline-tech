@@ -7,6 +7,7 @@ import {
   Building2,
   FileText,
   Gauge,
+  GraduationCap,
   History,
   Network,
   Settings,
@@ -61,6 +62,7 @@ function OrgDetailPage() {
   const org = orgQuery.data;
 
   const membership = memberships.find((m) => m.orgId === orgId) ?? null;
+  const isAcademy = org?.type === "academy" || org?.type === "football_school";
   const canManage = hasPermission("org:manage");
 
   if (orgQuery.isLoading) {
