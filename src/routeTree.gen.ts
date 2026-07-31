@@ -27,6 +27,7 @@ import { Route as AuthenticatedMembersRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedOrganisationsIndexRouteImport } from './routes/_authenticated/organisations.index'
 import { Route as AuthenticatedOrganisationsNewRouteImport } from './routes/_authenticated/organisations.new'
+import { Route as AuthenticatedOrganisationsOrgIdRouteImport } from './routes/_authenticated/organisations.$orgId'
 
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
   id: '/unauthorized',
@@ -119,6 +120,12 @@ const AuthenticatedOrganisationsNewRoute =
     path: '/organisations/new',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedOrganisationsOrgIdRoute =
+  AuthenticatedOrganisationsOrgIdRouteImport.update({
+    id: '/organisations/$orgId',
+    path: '/organisations/$orgId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -136,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/roles': typeof AuthenticatedRolesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/invitation/$token': typeof InvitationTokenRoute
+  '/organisations/$orgId': typeof AuthenticatedOrganisationsOrgIdRoute
   '/organisations/new': typeof AuthenticatedOrganisationsNewRoute
   '/organisations/': typeof AuthenticatedOrganisationsIndexRoute
 }
@@ -155,6 +163,7 @@ export interface FileRoutesByTo {
   '/roles': typeof AuthenticatedRolesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/invitation/$token': typeof InvitationTokenRoute
+  '/organisations/$orgId': typeof AuthenticatedOrganisationsOrgIdRoute
   '/organisations/new': typeof AuthenticatedOrganisationsNewRoute
   '/organisations': typeof AuthenticatedOrganisationsIndexRoute
 }
@@ -176,6 +185,7 @@ export interface FileRoutesById {
   '/_authenticated/roles': typeof AuthenticatedRolesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/invitation/$token': typeof InvitationTokenRoute
+  '/_authenticated/organisations/$orgId': typeof AuthenticatedOrganisationsOrgIdRoute
   '/_authenticated/organisations/new': typeof AuthenticatedOrganisationsNewRoute
   '/_authenticated/organisations/': typeof AuthenticatedOrganisationsIndexRoute
 }
@@ -197,6 +207,7 @@ export interface FileRouteTypes {
     | '/roles'
     | '/settings'
     | '/invitation/$token'
+    | '/organisations/$orgId'
     | '/organisations/new'
     | '/organisations/'
   fileRoutesByTo: FileRoutesByTo
@@ -216,6 +227,7 @@ export interface FileRouteTypes {
     | '/roles'
     | '/settings'
     | '/invitation/$token'
+    | '/organisations/$orgId'
     | '/organisations/new'
     | '/organisations'
   id:
@@ -236,6 +248,7 @@ export interface FileRouteTypes {
     | '/_authenticated/roles'
     | '/_authenticated/settings'
     | '/invitation/$token'
+    | '/_authenticated/organisations/$orgId'
     | '/_authenticated/organisations/new'
     | '/_authenticated/organisations/'
   fileRoutesById: FileRoutesById
@@ -382,6 +395,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrganisationsNewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/organisations/$orgId': {
+      id: '/_authenticated/organisations/$orgId'
+      path: '/organisations/$orgId'
+      fullPath: '/organisations/$orgId'
+      preLoaderRoute: typeof AuthenticatedOrganisationsOrgIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -391,6 +411,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedRolesRoute: typeof AuthenticatedRolesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedOrganisationsOrgIdRoute: typeof AuthenticatedOrganisationsOrgIdRoute
   AuthenticatedOrganisationsNewRoute: typeof AuthenticatedOrganisationsNewRoute
   AuthenticatedOrganisationsIndexRoute: typeof AuthenticatedOrganisationsIndexRoute
 }
@@ -401,6 +422,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedRolesRoute: AuthenticatedRolesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedOrganisationsOrgIdRoute: AuthenticatedOrganisationsOrgIdRoute,
   AuthenticatedOrganisationsNewRoute: AuthenticatedOrganisationsNewRoute,
   AuthenticatedOrganisationsIndexRoute: AuthenticatedOrganisationsIndexRoute,
 }
