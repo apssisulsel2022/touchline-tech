@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ReadOnlyNotice, SectionState } from "@/components/common/section-state";
-import { useConfirm } from "@/components/common/confirm-dialog";
+import { useConfirmDialog } from "@/components/common/confirm-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { audit } from "@/lib/audit";
 import { guardiansQuery, playerKeys, type GuardianRow } from "@/lib/players";
@@ -65,7 +65,7 @@ export function PlayerGuardiansCard({
   requiresGuardian: boolean;
 }) {
   const queryClient = useQueryClient();
-  const confirm = useConfirm();
+  const { confirm, dialog } = useConfirmDialog();
   const guardians = useQuery(guardiansQuery(orgId, playerId));
   const [open, setOpen] = React.useState(false);
   const [editing, setEditing] = React.useState<GuardianRow | null>(null);
@@ -242,7 +242,9 @@ export function PlayerGuardiansCard({
                           description: `${guardian.full_name} will no longer be linked to this player.`,
                           confirmLabel: "Remove",
                           destructive: true,
-                        }).then((ok) => ok && remove.mutate(guardian.id))
+                        }).then((ok: boolean) => {
+                          if (ok) remove.mutate(guardian.id);
+                        })
                       }
                     >
                       <Trash2 className="size-4" aria-hidden />
@@ -346,6 +348,7 @@ export function PlayerGuardiansCard({
           </form>
         </DialogContent>
       </Dialog>
+      {dialog}
     </Card>
   );
 }
