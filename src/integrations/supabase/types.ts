@@ -700,6 +700,407 @@ export type Database = {
           },
         ]
       }
+      player_documents: {
+        Row: {
+          category: string
+          created_at: string
+          expires_on: string | null
+          file_size: number | null
+          file_type: string | null
+          file_url: string
+          id: string
+          issued_on: string | null
+          org_id: string
+          player_id: string
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+          verification: Database["public"]["Enums"]["document_verification"]
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          expires_on?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url: string
+          id?: string
+          issued_on?: string | null
+          org_id: string
+          player_id: string
+          title: string
+          updated_at?: string
+          uploaded_by?: string | null
+          verification?: Database["public"]["Enums"]["document_verification"]
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          expires_on?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string
+          id?: string
+          issued_on?: string | null
+          org_id?: string
+          player_id?: string
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+          verification?: Database["public"]["Enums"]["document_verification"]
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "player_documents_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_documents_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      player_guardians: {
+        Row: {
+          address_line: string | null
+          consent_given_at: string | null
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          is_primary: boolean
+          notes: string | null
+          occupation: string | null
+          org_id: string
+          phone: string | null
+          player_id: string
+          relationship: Database["public"]["Enums"]["guardian_relationship"]
+          updated_at: string
+        }
+        Insert: {
+          address_line?: string | null
+          consent_given_at?: string | null
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          is_primary?: boolean
+          notes?: string | null
+          occupation?: string | null
+          org_id: string
+          phone?: string | null
+          player_id: string
+          relationship?: Database["public"]["Enums"]["guardian_relationship"]
+          updated_at?: string
+        }
+        Update: {
+          address_line?: string | null
+          consent_given_at?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          is_primary?: boolean
+          notes?: string | null
+          occupation?: string | null
+          org_id?: string
+          phone?: string | null
+          player_id?: string
+          relationship?: Database["public"]["Enums"]["guardian_relationship"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "player_guardians_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_guardians_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      player_registrations: {
+        Row: {
+          age_category_id: string | null
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          created_by: string | null
+          expires_on: string | null
+          fee_note: string | null
+          id: string
+          jersey_number: number | null
+          notes: string | null
+          org_id: string
+          player_id: string
+          registered_on: string
+          rejection_reason: string | null
+          season_id: string | null
+          status: Database["public"]["Enums"]["registration_status"]
+          team_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          age_category_id?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          expires_on?: string | null
+          fee_note?: string | null
+          id?: string
+          jersey_number?: number | null
+          notes?: string | null
+          org_id: string
+          player_id: string
+          registered_on?: string
+          rejection_reason?: string | null
+          season_id?: string | null
+          status?: Database["public"]["Enums"]["registration_status"]
+          team_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          age_category_id?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          expires_on?: string | null
+          fee_note?: string | null
+          id?: string
+          jersey_number?: number | null
+          notes?: string | null
+          org_id?: string
+          player_id?: string
+          registered_on?: string
+          rejection_reason?: string | null
+          season_id?: string | null
+          status?: Database["public"]["Enums"]["registration_status"]
+          team_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "player_registrations_age_category_id_fkey"
+            columns: ["age_category_id"]
+            isOneToOne: false
+            referencedRelation: "age_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_registrations_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_registrations_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_registrations_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "seasons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_registrations_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      player_status_events: {
+        Row: {
+          actor_user_id: string | null
+          created_at: string
+          from_status: Database["public"]["Enums"]["player_status"] | null
+          id: string
+          org_id: string
+          player_id: string
+          reason: string | null
+          source: string
+          to_status: Database["public"]["Enums"]["player_status"]
+        }
+        Insert: {
+          actor_user_id?: string | null
+          created_at?: string
+          from_status?: Database["public"]["Enums"]["player_status"] | null
+          id?: string
+          org_id: string
+          player_id: string
+          reason?: string | null
+          source?: string
+          to_status: Database["public"]["Enums"]["player_status"]
+        }
+        Update: {
+          actor_user_id?: string | null
+          created_at?: string
+          from_status?: Database["public"]["Enums"]["player_status"] | null
+          id?: string
+          org_id?: string
+          player_id?: string
+          reason?: string | null
+          source?: string
+          to_status?: Database["public"]["Enums"]["player_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "player_status_events_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_status_events_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      players: {
+        Row: {
+          address_line: string | null
+          city: string | null
+          created_at: string
+          created_by: string | null
+          date_of_birth: string
+          deleted_at: string | null
+          deleted_by: string | null
+          email: string | null
+          first_name: string
+          gender: Database["public"]["Enums"]["player_gender"]
+          height_cm: number | null
+          id: string
+          known_as: string | null
+          last_name: string
+          medical_notes: string | null
+          national_id: string | null
+          nationality: string | null
+          notes: string | null
+          org_id: string
+          phone: string | null
+          photo_url: string | null
+          preferred_foot: Database["public"]["Enums"]["preferred_foot"]
+          primary_position: Database["public"]["Enums"]["player_position"]
+          registry_no: string
+          school_name: string | null
+          secondary_position:
+            | Database["public"]["Enums"]["player_position"]
+            | null
+          status: Database["public"]["Enums"]["player_status"]
+          updated_at: string
+          version: number
+          weight_kg: number | null
+        }
+        Insert: {
+          address_line?: string | null
+          city?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_of_birth: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          email?: string | null
+          first_name: string
+          gender?: Database["public"]["Enums"]["player_gender"]
+          height_cm?: number | null
+          id?: string
+          known_as?: string | null
+          last_name: string
+          medical_notes?: string | null
+          national_id?: string | null
+          nationality?: string | null
+          notes?: string | null
+          org_id: string
+          phone?: string | null
+          photo_url?: string | null
+          preferred_foot?: Database["public"]["Enums"]["preferred_foot"]
+          primary_position?: Database["public"]["Enums"]["player_position"]
+          registry_no: string
+          school_name?: string | null
+          secondary_position?:
+            | Database["public"]["Enums"]["player_position"]
+            | null
+          status?: Database["public"]["Enums"]["player_status"]
+          updated_at?: string
+          version?: number
+          weight_kg?: number | null
+        }
+        Update: {
+          address_line?: string | null
+          city?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_of_birth?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          email?: string | null
+          first_name?: string
+          gender?: Database["public"]["Enums"]["player_gender"]
+          height_cm?: number | null
+          id?: string
+          known_as?: string | null
+          last_name?: string
+          medical_notes?: string | null
+          national_id?: string | null
+          nationality?: string | null
+          notes?: string | null
+          org_id?: string
+          phone?: string | null
+          photo_url?: string | null
+          preferred_foot?: Database["public"]["Enums"]["preferred_foot"]
+          primary_position?: Database["public"]["Enums"]["player_position"]
+          registry_no?: string
+          school_name?: string | null
+          secondary_position?:
+            | Database["public"]["Enums"]["player_position"]
+            | null
+          status?: Database["public"]["Enums"]["player_status"]
+          updated_at?: string
+          version?: number
+          weight_kg?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "players_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1058,6 +1459,7 @@ export type Database = {
         | "scout"
       coach_contract_type: "full_time" | "part_time" | "volunteer" | "freelance"
       coach_status: "active" | "inactive" | "on_leave" | "terminated"
+      document_verification: "pending" | "verified" | "rejected" | "expired"
       facility_status: "available" | "maintenance" | "unavailable"
       facility_type:
         | "training_ground"
@@ -1067,6 +1469,12 @@ export type Database = {
         | "gym"
         | "medical_room"
         | "office"
+      guardian_relationship:
+        | "mother"
+        | "father"
+        | "legal_guardian"
+        | "sibling"
+        | "other"
       invitation_status:
         | "pending"
         | "accepted"
@@ -1085,6 +1493,29 @@ export type Database = {
         | "football_school"
         | "competition_organizer"
         | "partner"
+      player_gender: "male" | "female" | "other" | "undisclosed"
+      player_position:
+        | "goalkeeper"
+        | "defender"
+        | "midfielder"
+        | "forward"
+        | "unassigned"
+      player_status:
+        | "draft"
+        | "active"
+        | "inactive"
+        | "injured"
+        | "suspended"
+        | "transferred"
+        | "archived"
+      preferred_foot: "left" | "right" | "both"
+      registration_status:
+        | "draft"
+        | "pending"
+        | "approved"
+        | "rejected"
+        | "expired"
+        | "withdrawn"
       season_status: "upcoming" | "active" | "completed" | "archived"
       team_status: "active" | "inactive" | "archived"
     }
@@ -1236,6 +1667,7 @@ export const Constants = {
       ],
       coach_contract_type: ["full_time", "part_time", "volunteer", "freelance"],
       coach_status: ["active", "inactive", "on_leave", "terminated"],
+      document_verification: ["pending", "verified", "rejected", "expired"],
       facility_status: ["available", "maintenance", "unavailable"],
       facility_type: [
         "training_ground",
@@ -1245,6 +1677,13 @@ export const Constants = {
         "gym",
         "medical_room",
         "office",
+      ],
+      guardian_relationship: [
+        "mother",
+        "father",
+        "legal_guardian",
+        "sibling",
+        "other",
       ],
       invitation_status: [
         "pending",
@@ -1265,6 +1704,32 @@ export const Constants = {
         "football_school",
         "competition_organizer",
         "partner",
+      ],
+      player_gender: ["male", "female", "other", "undisclosed"],
+      player_position: [
+        "goalkeeper",
+        "defender",
+        "midfielder",
+        "forward",
+        "unassigned",
+      ],
+      player_status: [
+        "draft",
+        "active",
+        "inactive",
+        "injured",
+        "suspended",
+        "transferred",
+        "archived",
+      ],
+      preferred_foot: ["left", "right", "both"],
+      registration_status: [
+        "draft",
+        "pending",
+        "approved",
+        "rejected",
+        "expired",
+        "withdrawn",
       ],
       season_status: ["upcoming", "active", "completed", "archived"],
       team_status: ["active", "inactive", "archived"],
