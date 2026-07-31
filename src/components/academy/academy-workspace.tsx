@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { OrganizationRow } from "@/lib/organizations";
 import { AcademyDashboardTab } from "@/components/academy/academy-dashboard-tab";
 import { AcademyProfileTab } from "@/components/academy/academy-profile-tab";
 import { AcademyAgeCategoriesTab } from "@/components/academy/academy-age-categories-tab";
@@ -35,7 +36,8 @@ const SECTIONS = [
 ] as const;
 
 /** Academy / football school workspace grouping every SSB management section. */
-export function AcademyWorkspace({ orgId, canManage }: { orgId: string; canManage: boolean }) {
+export function AcademyWorkspace({ org, canManage }: { org: OrganizationRow; canManage: boolean }) {
+  const orgId = org.id;
   const [section, setSection] = React.useState<string>("overview");
 
   return (
@@ -55,7 +57,7 @@ export function AcademyWorkspace({ orgId, canManage }: { orgId: string; canManag
         <AcademyDashboardTab orgId={orgId} />
       </TabsContent>
       <TabsContent value="profile">
-        <AcademyProfileTab orgId={orgId} canManage={canManage} />
+        <AcademyProfileTab org={org} canManage={canManage} />
       </TabsContent>
       <TabsContent value="seasons">
         <AcademySeasonsTab orgId={orgId} canManage={canManage} />
