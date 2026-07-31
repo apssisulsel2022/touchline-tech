@@ -224,3 +224,60 @@ export function isDocumentExpiring(expiresOn?: string | null) {
   const days = (new Date(expiresOn).getTime() - Date.now()) / 86_400_000;
   return days <= 60;
 }
+
+/* ---------------------------- registration lookups ------------------------ */
+
+export interface RegistrationOptions {
+  seasons: { id: string; name: string; is_current: boolean }[];
+  teams: { id: string; name: string; age_category_id: string | null }[];
+  ageCategories: { id: string; label: string; min_age: number | null; max_age: number }[];
+}
+
+/**
+ * Season / squad / age-category lookups needed to register a player. Read-only
+ * projections so the Player domain never depends on Academy internals.
+ */
+export const registrationOptionsQuery = (orgId: string) =>
+  queryOptions({
+    queryKey: [...playerKeys.all(orgId), "registration-options"] as const,
+    queryFn: async (): Promise<RegistrationOptions> => {
+      const [seasons, teams, categories] = await Promise.all([
+        supabase
+          .from("seasons")
+          .select("id, name, is_current")
+          .eq("org_id", orgId)
+          .order("starts_on", { ascending: false }),
+        supabase
+          .from("teams")
+          .select("id, name, age_category_id")
+          .eq("org_id", orgId)
+          .order("name", { ascending: true }),
+        supabase
+          .from("age_categories")
+          .select("id, label, min_age, max_age")
+          .eq("org_id", orgId)
+          .eq("is_active", true)
+          .order("sort_order", { ascending: true }),
+      ]);
+      if (seasons.error) throw seasons.error;
+      if (teams.error) throw teams.error;
+      if (categories.error) throw categories.error;
+      return {
+        seasons: seasons.data ?? [],
+        teams: teams.data ?? [],
+        ageCategories: categories.data ?? [],
+      };
+    },
+    staleTime: 60_000,
+  });
+
+/** True when the player's age at registration fits the selected age category. */
+export function fitsAgeCategory(
+  age: number,
+  category?: { min_age: number | null; max_age: number },
+): boolean {
+  if (!category) return true;
+  if (age > category.max_age) return false;
+  if (category.min_age !== null && age < category.min_age) return false;
+  return true;
+}
