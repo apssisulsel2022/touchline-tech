@@ -302,12 +302,12 @@ export const coachSchema = z
     license_level: optionalText(40),
     license_number: optionalText(60),
     license_expiry: optionalDate,
-    certifications: z.array(z.string().trim().max(80)).max(20).default([]),
+    certifications: z.array(z.string().trim().max(80)).max(20),
     contract_type: z.enum(CONTRACT_TYPES),
     contract_start: optionalDate,
     contract_end: optionalDate,
     status: z.enum(COACH_STATUSES),
-    availability: z.array(z.coerce.number().int().min(0).max(6)).max(7).default([]),
+    availability: z.array(z.coerce.number().int().min(0).max(6)).max(7),
     notes: optionalText(1000),
   })
   .refine(
@@ -349,7 +349,7 @@ export const trainingSessionSchema = z
     starts_at: z.string().regex(/^\d{2}:\d{2}$/, "Use HH:MM"),
     ends_at: z.string().regex(/^\d{2}:\d{2}$/, "Use HH:MM"),
     capacity: z.coerce.number().int().min(0).max(500).optional(),
-    objectives: z.array(z.string().trim().max(120)).max(10).default([]),
+    objectives: z.array(z.string().trim().max(120)).max(10),
     intensity: optionalText(40),
     is_active: z.boolean(),
   })

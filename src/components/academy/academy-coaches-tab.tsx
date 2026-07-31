@@ -2,7 +2,7 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
-import { BadgeCheck, Loader2, Pencil, Plus, Trash2, Whistle } from "lucide-react";
+import { BadgeCheck, Loader2, Pencil, Plus, Trash2, ClipboardCheck } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -182,7 +182,7 @@ export function AcademyCoachesTab({ orgId, canManage }: { orgId: string; canMana
         isLoading={coaches.isLoading}
         error={coaches.error}
         isEmpty={(coaches.data ?? []).length === 0}
-        emptyIcon={Whistle}
+        emptyIcon={ClipboardCheck}
         emptyTitle="No coaches registered"
         emptyDescription="Add coaching staff with their licence details so they can be assigned to teams and sessions."
         emptyAction={canManage ? <Button onClick={() => openDialog()}>Add coach</Button> : undefined}
