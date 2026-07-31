@@ -362,44 +362,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      can_admin_org: {
-        Args: { _org_id: string; _user_id: string }
-        Returns: boolean
-      }
-      can_view_org: {
-        Args: { _org_id: string; _user_id: string }
-        Returns: boolean
-      }
-      has_org_role: {
-        Args: {
-          _org_id: string
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
-      is_org_admin: {
-        Args: { _org_id: string; _user_id: string }
-        Returns: boolean
-      }
-      is_org_member: {
-        Args: { _org_id: string; _user_id: string }
-        Returns: boolean
-      }
-      is_platform_owner: { Args: { _user_id: string }; Returns: boolean }
-      org_ancestor_ids: {
-        Args: { _org_id: string }
-        Returns: {
-          id: string
-        }[]
-      }
+      [_ in never]: never
     }
     Enums: {
       app_role:
