@@ -7,6 +7,7 @@ import {
   Building2,
   FileText,
   Gauge,
+  GraduationCap,
   History,
   Network,
   Settings,
@@ -28,6 +29,7 @@ import { OrgDocumentsTab } from "@/components/organizations/org-documents-tab";
 import { OrgAuditTab } from "@/components/organizations/org-audit-tab";
 import { OrgDangerZone } from "@/components/organizations/org-danger-zone";
 import { OrgTenantCard } from "@/components/organizations/org-tenant-card";
+import { AcademyWorkspace } from "@/components/academy/academy-workspace";
 import { organizationQuery } from "@/lib/organizations";
 import { useAuth } from "@/providers/auth-provider";
 
@@ -60,6 +62,7 @@ function OrgDetailPage() {
   const org = orgQuery.data;
 
   const membership = memberships.find((m) => m.orgId === orgId) ?? null;
+  const isAcademy = org?.type === "academy" || org?.type === "football_school";
   const canManage = hasPermission("org:manage");
 
   if (orgQuery.isLoading) {
@@ -115,6 +118,7 @@ function OrgDetailPage() {
         </div>
       )}
 
+      {/* Academy workspace only applies to academies and football schools */}
       <OrgTenantCard org={org} role={membership?.role ?? null} />
 
       <Tabs value={tab} onValueChange={setTab}>
@@ -136,6 +140,12 @@ function OrgDetailPage() {
               <Users className="size-4" aria-hidden />
               Members
             </TabsTrigger>
+            {isAcademy && (
+              <TabsTrigger value="academy" className="gap-2">
+                <GraduationCap className="size-4" aria-hidden />
+                Academy
+              </TabsTrigger>
+            )}
             <TabsTrigger value="documents" className="gap-2">
               <FileText className="size-4" aria-hidden />
               Documents
@@ -163,6 +173,11 @@ function OrgDetailPage() {
         <TabsContent value="members" className="mt-6">
           <OrgMembersTab org={org} canManage={canManage} />
         </TabsContent>
+        {isAcademy && (
+          <TabsContent value="academy" className="mt-6">
+            <AcademyWorkspace org={org} canManage={canManage} />
+          </TabsContent>
+        )}
         <TabsContent value="documents" className="mt-6">
           <OrgDocumentsTab org={org} canManage={canManage} />
         </TabsContent>

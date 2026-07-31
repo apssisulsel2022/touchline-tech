@@ -14,6 +14,261 @@ export type Database = {
   }
   public: {
     Tables: {
+      academy_coaches: {
+        Row: {
+          availability: Json
+          certifications: string[]
+          contract_end: string | null
+          contract_start: string | null
+          contract_type: Database["public"]["Enums"]["coach_contract_type"]
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          license_expiry: string | null
+          license_level: string | null
+          license_number: string | null
+          notes: string | null
+          org_id: string
+          phone: string | null
+          photo_url: string | null
+          role_title: string
+          status: Database["public"]["Enums"]["coach_status"]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          availability?: Json
+          certifications?: string[]
+          contract_end?: string | null
+          contract_start?: string | null
+          contract_type?: Database["public"]["Enums"]["coach_contract_type"]
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          license_expiry?: string | null
+          license_level?: string | null
+          license_number?: string | null
+          notes?: string | null
+          org_id: string
+          phone?: string | null
+          photo_url?: string | null
+          role_title?: string
+          status?: Database["public"]["Enums"]["coach_status"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          availability?: Json
+          certifications?: string[]
+          contract_end?: string | null
+          contract_start?: string | null
+          contract_type?: Database["public"]["Enums"]["coach_contract_type"]
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          license_expiry?: string | null
+          license_level?: string | null
+          license_number?: string | null
+          notes?: string | null
+          org_id?: string
+          phone?: string | null
+          photo_url?: string | null
+          role_title?: string
+          status?: Database["public"]["Enums"]["coach_status"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academy_coaches_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      academy_events: {
+        Row: {
+          created_at: string
+          description: string | null
+          ends_on: string
+          id: string
+          org_id: string
+          season_id: string | null
+          starts_on: string
+          title: string
+          type: Database["public"]["Enums"]["academy_event_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          ends_on: string
+          id?: string
+          org_id: string
+          season_id?: string | null
+          starts_on: string
+          title: string
+          type?: Database["public"]["Enums"]["academy_event_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          ends_on?: string
+          id?: string
+          org_id?: string
+          season_id?: string | null
+          starts_on?: string
+          title?: string
+          type?: Database["public"]["Enums"]["academy_event_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academy_events_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "academy_events_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "seasons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      academy_profiles: {
+        Row: {
+          accreditation: string | null
+          accreditation_level: string | null
+          capacity: number | null
+          created_at: string
+          founded_date: string | null
+          head_of_academy: string | null
+          id: string
+          license_authority: string | null
+          license_expiry: string | null
+          license_number: string | null
+          motto: string | null
+          org_id: string
+          philosophy: string | null
+          primary_color: string | null
+          registration_number: string | null
+          secondary_color: string | null
+          updated_at: string
+        }
+        Insert: {
+          accreditation?: string | null
+          accreditation_level?: string | null
+          capacity?: number | null
+          created_at?: string
+          founded_date?: string | null
+          head_of_academy?: string | null
+          id?: string
+          license_authority?: string | null
+          license_expiry?: string | null
+          license_number?: string | null
+          motto?: string | null
+          org_id: string
+          philosophy?: string | null
+          primary_color?: string | null
+          registration_number?: string | null
+          secondary_color?: string | null
+          updated_at?: string
+        }
+        Update: {
+          accreditation?: string | null
+          accreditation_level?: string | null
+          capacity?: number | null
+          created_at?: string
+          founded_date?: string | null
+          head_of_academy?: string | null
+          id?: string
+          license_authority?: string | null
+          license_expiry?: string | null
+          license_number?: string | null
+          motto?: string | null
+          org_id?: string
+          philosophy?: string | null
+          primary_color?: string | null
+          registration_number?: string | null
+          secondary_color?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academy_profiles_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      age_categories: {
+        Row: {
+          code: string
+          created_at: string
+          cutoff_month: number
+          description: string | null
+          id: string
+          is_active: boolean
+          is_custom: boolean
+          label: string
+          max_age: number
+          min_age: number | null
+          org_id: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          cutoff_month?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          is_custom?: boolean
+          label: string
+          max_age: number
+          min_age?: number | null
+          org_id: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          cutoff_month?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          is_custom?: boolean
+          label?: string
+          max_age?: number
+          min_age?: number | null
+          org_id?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "age_categories_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action: string
@@ -48,6 +303,68 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "audit_logs_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      facilities: {
+        Row: {
+          address_line: string | null
+          capacity: number | null
+          city: string | null
+          created_at: string
+          equipment: Json
+          id: string
+          latitude: number | null
+          longitude: number | null
+          name: string
+          notes: string | null
+          org_id: string
+          status: Database["public"]["Enums"]["facility_status"]
+          surface: string | null
+          type: Database["public"]["Enums"]["facility_type"]
+          updated_at: string
+        }
+        Insert: {
+          address_line?: string | null
+          capacity?: number | null
+          city?: string | null
+          created_at?: string
+          equipment?: Json
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          notes?: string | null
+          org_id: string
+          status?: Database["public"]["Enums"]["facility_status"]
+          surface?: string | null
+          type?: Database["public"]["Enums"]["facility_type"]
+          updated_at?: string
+        }
+        Update: {
+          address_line?: string | null
+          capacity?: number | null
+          city?: string | null
+          created_at?: string
+          equipment?: Json
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          notes?: string | null
+          org_id?: string
+          status?: Database["public"]["Enums"]["facility_status"]
+          surface?: string | null
+          type?: Database["public"]["Enums"]["facility_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "facilities_org_id_fkey"
             columns: ["org_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -95,6 +412,98 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "invitations_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_albums: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          org_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          org_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          org_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_albums_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_items: {
+        Row: {
+          album_id: string | null
+          caption: string | null
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["media_kind"]
+          org_id: string
+          updated_at: string
+          uploaded_by: string | null
+          url: string
+        }
+        Insert: {
+          album_id?: string | null
+          caption?: string | null
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["media_kind"]
+          org_id: string
+          updated_at?: string
+          uploaded_by?: string | null
+          url: string
+        }
+        Update: {
+          album_id?: string | null
+          caption?: string | null
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["media_kind"]
+          org_id?: string
+          updated_at?: string
+          uploaded_by?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_items_album_id_fkey"
+            columns: ["album_id"]
+            isOneToOne: false
+            referencedRelation: "media_albums"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_items_org_id_fkey"
             columns: ["org_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -336,6 +745,270 @@ export type Database = {
         }
         Relationships: []
       }
+      seasons: {
+        Row: {
+          academic_year: string | null
+          created_at: string
+          created_by: string | null
+          ends_on: string
+          id: string
+          is_current: boolean
+          name: string
+          notes: string | null
+          org_id: string
+          registration_closes_on: string | null
+          registration_opens_on: string | null
+          starts_on: string
+          status: Database["public"]["Enums"]["season_status"]
+          updated_at: string
+        }
+        Insert: {
+          academic_year?: string | null
+          created_at?: string
+          created_by?: string | null
+          ends_on: string
+          id?: string
+          is_current?: boolean
+          name: string
+          notes?: string | null
+          org_id: string
+          registration_closes_on?: string | null
+          registration_opens_on?: string | null
+          starts_on: string
+          status?: Database["public"]["Enums"]["season_status"]
+          updated_at?: string
+        }
+        Update: {
+          academic_year?: string | null
+          created_at?: string
+          created_by?: string | null
+          ends_on?: string
+          id?: string
+          is_current?: boolean
+          name?: string
+          notes?: string | null
+          org_id?: string
+          registration_closes_on?: string | null
+          registration_opens_on?: string | null
+          starts_on?: string
+          status?: Database["public"]["Enums"]["season_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seasons_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teams: {
+        Row: {
+          age_category_id: string | null
+          archived_at: string | null
+          archived_by: string | null
+          assistant_coach_id: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          head_coach_id: string | null
+          id: string
+          manager_id: string | null
+          max_squad_size: number
+          name: string
+          org_id: string
+          photo_url: string | null
+          season_id: string | null
+          short_name: string | null
+          status: Database["public"]["Enums"]["team_status"]
+          updated_at: string
+        }
+        Insert: {
+          age_category_id?: string | null
+          archived_at?: string | null
+          archived_by?: string | null
+          assistant_coach_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          head_coach_id?: string | null
+          id?: string
+          manager_id?: string | null
+          max_squad_size?: number
+          name: string
+          org_id: string
+          photo_url?: string | null
+          season_id?: string | null
+          short_name?: string | null
+          status?: Database["public"]["Enums"]["team_status"]
+          updated_at?: string
+        }
+        Update: {
+          age_category_id?: string | null
+          archived_at?: string | null
+          archived_by?: string | null
+          assistant_coach_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          head_coach_id?: string | null
+          id?: string
+          manager_id?: string | null
+          max_squad_size?: number
+          name?: string
+          org_id?: string
+          photo_url?: string | null
+          season_id?: string | null
+          short_name?: string | null
+          status?: Database["public"]["Enums"]["team_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teams_age_category_id_fkey"
+            columns: ["age_category_id"]
+            isOneToOne: false
+            referencedRelation: "age_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teams_assistant_coach_id_fkey"
+            columns: ["assistant_coach_id"]
+            isOneToOne: false
+            referencedRelation: "academy_coaches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teams_head_coach_id_fkey"
+            columns: ["head_coach_id"]
+            isOneToOne: false
+            referencedRelation: "academy_coaches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teams_manager_id_fkey"
+            columns: ["manager_id"]
+            isOneToOne: false
+            referencedRelation: "academy_coaches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teams_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teams_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "seasons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      training_sessions: {
+        Row: {
+          attendance_note: string | null
+          capacity: number | null
+          coach_id: string | null
+          created_at: string
+          ends_at: string
+          facility_id: string | null
+          id: string
+          intensity: string | null
+          is_active: boolean
+          objectives: string[]
+          org_id: string
+          season_id: string | null
+          starts_at: string
+          team_id: string | null
+          title: string
+          updated_at: string
+          weather_note: string | null
+          weekday: number
+        }
+        Insert: {
+          attendance_note?: string | null
+          capacity?: number | null
+          coach_id?: string | null
+          created_at?: string
+          ends_at: string
+          facility_id?: string | null
+          id?: string
+          intensity?: string | null
+          is_active?: boolean
+          objectives?: string[]
+          org_id: string
+          season_id?: string | null
+          starts_at: string
+          team_id?: string | null
+          title: string
+          updated_at?: string
+          weather_note?: string | null
+          weekday: number
+        }
+        Update: {
+          attendance_note?: string | null
+          capacity?: number | null
+          coach_id?: string | null
+          created_at?: string
+          ends_at?: string
+          facility_id?: string | null
+          id?: string
+          intensity?: string | null
+          is_active?: boolean
+          objectives?: string[]
+          org_id?: string
+          season_id?: string | null
+          starts_at?: string
+          team_id?: string | null
+          title?: string
+          updated_at?: string
+          weather_note?: string | null
+          weekday?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_sessions_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "academy_coaches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_sessions_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_sessions_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_sessions_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "seasons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_sessions_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -365,6 +1038,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      academy_event_type:
+        | "registration_window"
+        | "holiday"
+        | "training_block"
+        | "tournament"
+        | "meeting"
+        | "other"
       app_role:
         | "platform_owner"
         | "federation"
@@ -376,12 +1056,24 @@ export type Database = {
         | "player"
         | "referee"
         | "scout"
+      coach_contract_type: "full_time" | "part_time" | "volunteer" | "freelance"
+      coach_status: "active" | "inactive" | "on_leave" | "terminated"
+      facility_status: "available" | "maintenance" | "unavailable"
+      facility_type:
+        | "training_ground"
+        | "field"
+        | "locker_room"
+        | "equipment_store"
+        | "gym"
+        | "medical_room"
+        | "office"
       invitation_status:
         | "pending"
         | "accepted"
         | "rejected"
         | "revoked"
         | "expired"
+      media_kind: "photo" | "video"
       org_status: "active" | "inactive" | "suspended" | "archived"
       org_type:
         | "platform"
@@ -393,6 +1085,8 @@ export type Database = {
         | "football_school"
         | "competition_organizer"
         | "partner"
+      season_status: "upcoming" | "active" | "completed" | "archived"
+      team_status: "active" | "inactive" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -520,6 +1214,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      academy_event_type: [
+        "registration_window",
+        "holiday",
+        "training_block",
+        "tournament",
+        "meeting",
+        "other",
+      ],
       app_role: [
         "platform_owner",
         "federation",
@@ -532,6 +1234,18 @@ export const Constants = {
         "referee",
         "scout",
       ],
+      coach_contract_type: ["full_time", "part_time", "volunteer", "freelance"],
+      coach_status: ["active", "inactive", "on_leave", "terminated"],
+      facility_status: ["available", "maintenance", "unavailable"],
+      facility_type: [
+        "training_ground",
+        "field",
+        "locker_room",
+        "equipment_store",
+        "gym",
+        "medical_room",
+        "office",
+      ],
       invitation_status: [
         "pending",
         "accepted",
@@ -539,6 +1253,7 @@ export const Constants = {
         "revoked",
         "expired",
       ],
+      media_kind: ["photo", "video"],
       org_status: ["active", "inactive", "suspended", "archived"],
       org_type: [
         "platform",
@@ -551,6 +1266,8 @@ export const Constants = {
         "competition_organizer",
         "partner",
       ],
+      season_status: ["upcoming", "active", "completed", "archived"],
+      team_status: ["active", "inactive", "archived"],
     },
   },
 } as const

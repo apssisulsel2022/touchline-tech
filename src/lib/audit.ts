@@ -25,7 +25,37 @@ export type AuditAction =
   | "invitation.sent"
   | "invitation.accepted"
   | "invitation.rejected"
-  | "invitation.revoked";
+  | "invitation.revoked"
+  // Academy / Football School (SSB) module
+  | "academy.profile_updated"
+  | "academy.season_created"
+  | "academy.season_updated"
+  | "academy.season_deleted"
+  | "academy.age_category_created"
+  | "academy.age_category_updated"
+  | "academy.age_category_deleted"
+  | "academy.team_created"
+  | "academy.team_updated"
+  | "academy.team_archived"
+  | "academy.team_restored"
+  | "academy.team_deleted"
+  | "academy.coach_created"
+  | "academy.coach_updated"
+  | "academy.coach_deleted"
+  | "academy.coach_assigned"
+  | "academy.facility_created"
+  | "academy.facility_updated"
+  | "academy.facility_deleted"
+  | "academy.training_created"
+  | "academy.training_updated"
+  | "academy.training_deleted"
+  | "academy.event_created"
+  | "academy.event_updated"
+  | "academy.event_deleted"
+  | "academy.album_created"
+  | "academy.album_deleted"
+  | "academy.media_added"
+  | "academy.media_removed";
 
 
 /**
