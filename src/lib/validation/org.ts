@@ -57,8 +57,8 @@ export const createOrganizationSchema = z.object({
   website: z.string().url("Must be a valid URL").max(255).optional().or(z.literal("")),
   country: z.string().max(100).optional().or(z.literal("")),
   city: z.string().max(100).optional().or(z.literal("")),
-  timezone: z.string().min(1).default("UTC"),
-  language: z.string().min(1).default("en"),
+  timezone: z.string().min(1),
+  language: z.string().min(1),
 });
 
 export type CreateOrganizationInput = z.infer<typeof createOrganizationSchema>;
@@ -92,14 +92,14 @@ export const organizationSettingsSchema = z.object({
     youtube: z.string().url("Invalid URL").optional().or(z.literal("")),
   }),
   settings: z.object({
-    allowPublicDirectory: z.boolean().default(true),
-    requireMfaForAdmins: z.boolean().default(false),
-    defaultMemberRole: z.enum(ROLES).default("player"),
-    accentColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).default("#10b981"),
+    allowPublicDirectory: z.boolean(),
+    requireMfaForAdmins: z.boolean(),
+    defaultMemberRole: z.enum(ROLES),
+    accentColor: z.string().regex(/^#[0-9a-fA-F]{6}$/, "Use a hex colour like #10b981"),
     notifications: z.object({
-      memberInvites: z.boolean().default(true),
-      roleChanges: z.boolean().default(true),
-      weeklyDigest: z.boolean().default(true),
+      memberInvites: z.boolean(),
+      roleChanges: z.boolean(),
+      weeklyDigest: z.boolean(),
     }),
   }),
 });
@@ -108,7 +108,7 @@ export type OrganizationSettingsInput = z.infer<typeof organizationSettingsSchem
 
 export const orgDocumentSchema = z.object({
   title: z.string().trim().min(2, "Title is required").max(120),
-  category: z.enum(["general", "governance", "legal", "financial", "medical", "affiliate"]).default("general"),
+  category: z.enum(["general", "governance", "legal", "financial", "medical", "affiliate"]),
   fileUrl: z.string().url("Valid file URL required"),
   fileType: z.string().max(50).optional(),
   fileSize: z.number().int().nonnegative().optional(),
