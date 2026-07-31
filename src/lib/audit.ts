@@ -55,7 +55,22 @@ export type AuditAction =
   | "academy.album_created"
   | "academy.album_deleted"
   | "academy.media_added"
-  | "academy.media_removed";
+  | "academy.media_removed"
+  // Player registry domain
+  | "player.created"
+  | "player.updated"
+  | "player.status_changed"
+  | "player.archived"
+  | "player.guardian_added"
+  | "player.guardian_updated"
+  | "player.guardian_removed"
+  | "player.registration_created"
+  | "player.registration_updated"
+  | "player.registration_status_changed"
+  | "player.registration_deleted"
+  | "player.document_added"
+  | "player.document_verified"
+  | "player.document_removed";
 
 
 /**

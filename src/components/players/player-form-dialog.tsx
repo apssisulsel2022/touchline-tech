@@ -136,7 +136,7 @@ export function PlayerFormDialog({
       const { data: userData } = await supabase.auth.getUser();
       const { data, error } = await supabase
         .from("players")
-        .insert({ ...payload, org_id: orgId, created_by: userData.user?.id ?? null })
+        .insert({ ...payload, org_id: orgId, created_by: userData.user?.id ?? null } as never)
         .select("id, status")
         .single();
       if (error) throw error;
