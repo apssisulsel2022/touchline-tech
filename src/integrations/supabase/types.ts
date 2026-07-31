@@ -102,6 +102,53 @@ export type Database = {
           },
         ]
       }
+      org_documents: {
+        Row: {
+          category: string
+          created_at: string
+          file_size: number | null
+          file_type: string | null
+          file_url: string
+          id: string
+          org_id: string
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          file_size?: number | null
+          file_type?: string | null
+          file_url: string
+          id?: string
+          org_id: string
+          title: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string
+          id?: string
+          org_id?: string
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "org_documents_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       org_memberships: {
         Row: {
           created_at: string
@@ -139,36 +186,110 @@ export type Database = {
       }
       organizations: {
         Row: {
+          address_line: string | null
+          archived_at: string | null
+          archived_by: string | null
+          city: string | null
+          country: string | null
+          cover_url: string | null
           created_at: string
           deleted_at: string | null
+          description: string | null
+          email: string | null
           id: string
+          language: string
+          latitude: number | null
+          logo_url: string | null
+          longitude: number | null
           name: string
           owner_user_id: string | null
+          parent_id: string | null
+          phone: string | null
+          postal_code: string | null
+          region: string | null
+          settings: Json
           slug: string
+          socials: Json
+          status: Database["public"]["Enums"]["org_status"]
+          tags: string[]
+          timezone: string
           type: Database["public"]["Enums"]["org_type"]
           updated_at: string
+          website: string | null
         }
         Insert: {
+          address_line?: string | null
+          archived_at?: string | null
+          archived_by?: string | null
+          city?: string | null
+          country?: string | null
+          cover_url?: string | null
           created_at?: string
           deleted_at?: string | null
+          description?: string | null
+          email?: string | null
           id?: string
+          language?: string
+          latitude?: number | null
+          logo_url?: string | null
+          longitude?: number | null
           name: string
           owner_user_id?: string | null
+          parent_id?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          region?: string | null
+          settings?: Json
           slug: string
+          socials?: Json
+          status?: Database["public"]["Enums"]["org_status"]
+          tags?: string[]
+          timezone?: string
           type?: Database["public"]["Enums"]["org_type"]
           updated_at?: string
+          website?: string | null
         }
         Update: {
+          address_line?: string | null
+          archived_at?: string | null
+          archived_by?: string | null
+          city?: string | null
+          country?: string | null
+          cover_url?: string | null
           created_at?: string
           deleted_at?: string | null
+          description?: string | null
+          email?: string | null
           id?: string
+          language?: string
+          latitude?: number | null
+          logo_url?: string | null
+          longitude?: number | null
           name?: string
           owner_user_id?: string | null
+          parent_id?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          region?: string | null
+          settings?: Json
           slug?: string
+          socials?: Json
+          status?: Database["public"]["Enums"]["org_status"]
+          tags?: string[]
+          timezone?: string
           type?: Database["public"]["Enums"]["org_type"]
           updated_at?: string
+          website?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "organizations_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -241,6 +362,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_admin_org: {
+        Args: { _org_id: string; _user_id: string }
+        Returns: boolean
+      }
+      can_view_org: {
+        Args: { _org_id: string; _user_id: string }
+        Returns: boolean
+      }
       has_org_role: {
         Args: {
           _org_id: string
@@ -265,6 +394,12 @@ export type Database = {
         Returns: boolean
       }
       is_platform_owner: { Args: { _user_id: string }; Returns: boolean }
+      org_ancestor_ids: {
+        Args: { _org_id: string }
+        Returns: {
+          id: string
+        }[]
+      }
     }
     Enums: {
       app_role:
@@ -284,7 +419,17 @@ export type Database = {
         | "rejected"
         | "revoked"
         | "expired"
-      org_type: "platform" | "federation" | "association" | "academy" | "club"
+      org_status: "active" | "inactive" | "suspended" | "archived"
+      org_type:
+        | "platform"
+        | "federation"
+        | "association"
+        | "academy"
+        | "club"
+        | "district_association"
+        | "football_school"
+        | "competition_organizer"
+        | "partner"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -431,7 +576,18 @@ export const Constants = {
         "revoked",
         "expired",
       ],
-      org_type: ["platform", "federation", "association", "academy", "club"],
+      org_status: ["active", "inactive", "suspended", "archived"],
+      org_type: [
+        "platform",
+        "federation",
+        "association",
+        "academy",
+        "club",
+        "district_association",
+        "football_school",
+        "competition_organizer",
+        "partner",
+      ],
     },
   },
 } as const

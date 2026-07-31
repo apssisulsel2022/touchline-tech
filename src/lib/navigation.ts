@@ -52,7 +52,7 @@ const SETTINGS = WORKSPACE;
 const CATALOG: Record<string, NavItem> = {
   tenants: { title: "Tenants", to: "/tenants", icon: Building2, permission: "tenants:manage", comingSoon: true },
   governance: { title: "Governance", to: "/governance", icon: Shield, permission: "governance:manage", comingSoon: true },
-  organisations: { title: "Organisations", to: "/organisations", icon: Building2, permission: "org:manage", comingSoon: true },
+  organisations: { title: "Organisations", to: "/organisations", icon: Building2, permission: "org:manage" },
   people: { title: "People", to: "/people", icon: Users, permission: "people:view", comingSoon: true },
   competitions: { title: "Competitions", to: "/competitions", icon: Trophy, permission: "competitions:view", comingSoon: true },
   matches: { title: "Matches", to: "/matches", icon: CalendarDays, permission: "matches:view", comingSoon: true },

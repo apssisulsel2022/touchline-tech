@@ -10,12 +10,23 @@ export type AuditAction =
   | "profile.updated"
   | "org.switched"
   | "org.created"
+  | "org.updated"
+  | "org.archived"
+  | "org.restored"
+  | "org.deleted"
+  | "org.moved"
+  | "org.settings_updated"
+  | "org.ownership_transferred"
+  | "org.document_added"
+  | "org.document_removed"
+  | "member.added"
   | "member.role_changed"
   | "member.removed"
   | "invitation.sent"
   | "invitation.accepted"
   | "invitation.rejected"
   | "invitation.revoked";
+
 
 /**
  * Fire-and-forget audit log write. Failures are swallowed so audit issues never
