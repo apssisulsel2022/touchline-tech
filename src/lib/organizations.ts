@@ -223,6 +223,24 @@ export const orgMembersQuery = (orgId: string) =>
     staleTime: 15_000,
   });
 
+export async function fetchOrgChildren(orgId: string): Promise<OrganizationRow[]> {
+  const { data, error } = await supabase
+    .from("organizations")
+    .select("*")
+    .eq("parent_id", orgId)
+    .is("deleted_at", null)
+    .order("name", { ascending: true });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export const orgChildrenQuery = (orgId: string) =>
+  queryOptions({
+    queryKey: ["organization", orgId, "children"],
+    queryFn: () => fetchOrgChildren(orgId),
+    staleTime: 30_000,
+  });
+
 export async function fetchOrgDocuments(orgId: string): Promise<OrgDocumentRow[]> {
   const { data, error } = await supabase
     .from("org_documents")
