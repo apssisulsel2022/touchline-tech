@@ -207,16 +207,16 @@ function PlayerProfilePage() {
                 variant="outline"
                 className="gap-2 text-destructive"
                 disabled={archive.isPending}
-                onClick={() =>
-                  confirm({
+                onClick={async () => {
+                  const ok = await confirm({
                     title: "Archive this player?",
                     description:
                       "The record is soft-deleted: history and documents are retained, but the player leaves the active registry.",
                     confirmLabel: "Archive player",
                     destructive: true,
-                    onConfirm: () => archive.mutate(),
-                  })
-                }
+                  });
+                  if (ok) archive.mutate();
+                }}
               >
                 <Archive className="size-4" aria-hidden />
                 Archive
