@@ -27,6 +27,7 @@ import { Route as AuthenticatedMembersRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedPlayersIndexRouteImport } from './routes/_authenticated/players.index'
 import { Route as AuthenticatedOrganisationsIndexRouteImport } from './routes/_authenticated/organisations.index'
+import { Route as AuthenticatedPlayersPlayerIdRouteImport } from './routes/_authenticated/players.$playerId'
 import { Route as AuthenticatedOrganisationsNewRouteImport } from './routes/_authenticated/organisations.new'
 import { Route as AuthenticatedOrganisationsOrgIdRouteImport } from './routes/_authenticated/organisations.$orgId'
 
@@ -121,6 +122,12 @@ const AuthenticatedOrganisationsIndexRoute =
     path: '/organisations/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedPlayersPlayerIdRoute =
+  AuthenticatedPlayersPlayerIdRouteImport.update({
+    id: '/players/$playerId',
+    path: '/players/$playerId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedOrganisationsNewRoute =
   AuthenticatedOrganisationsNewRouteImport.update({
     id: '/organisations/new',
@@ -152,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/invitation/$token': typeof InvitationTokenRoute
   '/organisations/$orgId': typeof AuthenticatedOrganisationsOrgIdRoute
   '/organisations/new': typeof AuthenticatedOrganisationsNewRoute
+  '/players/$playerId': typeof AuthenticatedPlayersPlayerIdRoute
   '/organisations/': typeof AuthenticatedOrganisationsIndexRoute
   '/players/': typeof AuthenticatedPlayersIndexRoute
 }
@@ -173,6 +181,7 @@ export interface FileRoutesByTo {
   '/invitation/$token': typeof InvitationTokenRoute
   '/organisations/$orgId': typeof AuthenticatedOrganisationsOrgIdRoute
   '/organisations/new': typeof AuthenticatedOrganisationsNewRoute
+  '/players/$playerId': typeof AuthenticatedPlayersPlayerIdRoute
   '/organisations': typeof AuthenticatedOrganisationsIndexRoute
   '/players': typeof AuthenticatedPlayersIndexRoute
 }
@@ -196,6 +205,7 @@ export interface FileRoutesById {
   '/invitation/$token': typeof InvitationTokenRoute
   '/_authenticated/organisations/$orgId': typeof AuthenticatedOrganisationsOrgIdRoute
   '/_authenticated/organisations/new': typeof AuthenticatedOrganisationsNewRoute
+  '/_authenticated/players/$playerId': typeof AuthenticatedPlayersPlayerIdRoute
   '/_authenticated/organisations/': typeof AuthenticatedOrganisationsIndexRoute
   '/_authenticated/players/': typeof AuthenticatedPlayersIndexRoute
 }
@@ -219,6 +229,7 @@ export interface FileRouteTypes {
     | '/invitation/$token'
     | '/organisations/$orgId'
     | '/organisations/new'
+    | '/players/$playerId'
     | '/organisations/'
     | '/players/'
   fileRoutesByTo: FileRoutesByTo
@@ -240,6 +251,7 @@ export interface FileRouteTypes {
     | '/invitation/$token'
     | '/organisations/$orgId'
     | '/organisations/new'
+    | '/players/$playerId'
     | '/organisations'
     | '/players'
   id:
@@ -262,6 +274,7 @@ export interface FileRouteTypes {
     | '/invitation/$token'
     | '/_authenticated/organisations/$orgId'
     | '/_authenticated/organisations/new'
+    | '/_authenticated/players/$playerId'
     | '/_authenticated/organisations/'
     | '/_authenticated/players/'
   fileRoutesById: FileRoutesById
@@ -408,6 +421,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrganisationsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/players/$playerId': {
+      id: '/_authenticated/players/$playerId'
+      path: '/players/$playerId'
+      fullPath: '/players/$playerId'
+      preLoaderRoute: typeof AuthenticatedPlayersPlayerIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/organisations/new': {
       id: '/_authenticated/organisations/new'
       path: '/organisations/new'
@@ -433,6 +453,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedOrganisationsOrgIdRoute: typeof AuthenticatedOrganisationsOrgIdRoute
   AuthenticatedOrganisationsNewRoute: typeof AuthenticatedOrganisationsNewRoute
+  AuthenticatedPlayersPlayerIdRoute: typeof AuthenticatedPlayersPlayerIdRoute
   AuthenticatedOrganisationsIndexRoute: typeof AuthenticatedOrganisationsIndexRoute
   AuthenticatedPlayersIndexRoute: typeof AuthenticatedPlayersIndexRoute
 }
@@ -445,6 +466,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedOrganisationsOrgIdRoute: AuthenticatedOrganisationsOrgIdRoute,
   AuthenticatedOrganisationsNewRoute: AuthenticatedOrganisationsNewRoute,
+  AuthenticatedPlayersPlayerIdRoute: AuthenticatedPlayersPlayerIdRoute,
   AuthenticatedOrganisationsIndexRoute: AuthenticatedOrganisationsIndexRoute,
   AuthenticatedPlayersIndexRoute: AuthenticatedPlayersIndexRoute,
 }
