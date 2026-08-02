@@ -25,6 +25,7 @@ import { Route as AuthenticatedRolesRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedMembersRouteImport } from './routes/_authenticated/members'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedPlayersIndexRouteImport } from './routes/_authenticated/players.index'
 import { Route as AuthenticatedOrganisationsIndexRouteImport } from './routes/_authenticated/organisations.index'
 import { Route as AuthenticatedOrganisationsNewRouteImport } from './routes/_authenticated/organisations.new'
 import { Route as AuthenticatedOrganisationsOrgIdRouteImport } from './routes/_authenticated/organisations.$orgId'
@@ -108,6 +109,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPlayersIndexRoute =
+  AuthenticatedPlayersIndexRouteImport.update({
+    id: '/players/',
+    path: '/players/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedOrganisationsIndexRoute =
   AuthenticatedOrganisationsIndexRouteImport.update({
     id: '/organisations/',
@@ -146,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/organisations/$orgId': typeof AuthenticatedOrganisationsOrgIdRoute
   '/organisations/new': typeof AuthenticatedOrganisationsNewRoute
   '/organisations/': typeof AuthenticatedOrganisationsIndexRoute
+  '/players/': typeof AuthenticatedPlayersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -166,6 +174,7 @@ export interface FileRoutesByTo {
   '/organisations/$orgId': typeof AuthenticatedOrganisationsOrgIdRoute
   '/organisations/new': typeof AuthenticatedOrganisationsNewRoute
   '/organisations': typeof AuthenticatedOrganisationsIndexRoute
+  '/players': typeof AuthenticatedPlayersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -188,6 +197,7 @@ export interface FileRoutesById {
   '/_authenticated/organisations/$orgId': typeof AuthenticatedOrganisationsOrgIdRoute
   '/_authenticated/organisations/new': typeof AuthenticatedOrganisationsNewRoute
   '/_authenticated/organisations/': typeof AuthenticatedOrganisationsIndexRoute
+  '/_authenticated/players/': typeof AuthenticatedPlayersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -210,6 +220,7 @@ export interface FileRouteTypes {
     | '/organisations/$orgId'
     | '/organisations/new'
     | '/organisations/'
+    | '/players/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -230,6 +241,7 @@ export interface FileRouteTypes {
     | '/organisations/$orgId'
     | '/organisations/new'
     | '/organisations'
+    | '/players'
   id:
     | '__root__'
     | '/'
@@ -251,6 +263,7 @@ export interface FileRouteTypes {
     | '/_authenticated/organisations/$orgId'
     | '/_authenticated/organisations/new'
     | '/_authenticated/organisations/'
+    | '/_authenticated/players/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -381,6 +394,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/players/': {
+      id: '/_authenticated/players/'
+      path: '/players'
+      fullPath: '/players/'
+      preLoaderRoute: typeof AuthenticatedPlayersIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/organisations/': {
       id: '/_authenticated/organisations/'
       path: '/organisations'
@@ -414,6 +434,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOrganisationsOrgIdRoute: typeof AuthenticatedOrganisationsOrgIdRoute
   AuthenticatedOrganisationsNewRoute: typeof AuthenticatedOrganisationsNewRoute
   AuthenticatedOrganisationsIndexRoute: typeof AuthenticatedOrganisationsIndexRoute
+  AuthenticatedPlayersIndexRoute: typeof AuthenticatedPlayersIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -425,6 +446,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOrganisationsOrgIdRoute: AuthenticatedOrganisationsOrgIdRoute,
   AuthenticatedOrganisationsNewRoute: AuthenticatedOrganisationsNewRoute,
   AuthenticatedOrganisationsIndexRoute: AuthenticatedOrganisationsIndexRoute,
+  AuthenticatedPlayersIndexRoute: AuthenticatedPlayersIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -446,13 +468,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
