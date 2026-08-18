@@ -52,6 +52,7 @@ const SETTINGS = WORKSPACE;
 const CATALOG: Record<string, NavItem> = {
   tenants: { title: "Tenants", to: "/tenants", icon: Building2, permission: "tenants:manage", comingSoon: true },
   governance: { title: "Governance", to: "/governance", icon: Shield, permission: "governance:manage", comingSoon: true },
+  registry: { title: "Registry", to: "/registry", icon: Shield, permission: "governance:manage" },
   organisations: { title: "Organisations", to: "/organisations", icon: Building2, permission: "org:manage" },
   people: { title: "People", to: "/people", icon: Users, permission: "people:view", comingSoon: true },
   competitions: { title: "Competitions", to: "/competitions", icon: Trophy, permission: "competitions:view", comingSoon: true },
@@ -69,12 +70,12 @@ function group(label: string, keys: (keyof typeof CATALOG)[]): NavGroup {
 
 /** Navigation is role-shaped: items a role cannot access are never rendered. */
 export const ROLE_NAVIGATION: Record<Role, NavGroup[]> = {
-  platform_owner: [OVERVIEW, group("Platform", ["tenants", "governance", "organisations"]), group("Insights", ["analytics", "finance"]), SETTINGS],
-  federation: [OVERVIEW, group("Governance", ["governance", "organisations", "people"]), group("Competition", ["competitions", "matches"]), group("Insights", ["analytics"]), SETTINGS],
-  association: [OVERVIEW, group("Region", ["organisations", "people"]), group("Competition", ["competitions", "matches"]), SETTINGS],
-  academy: [OVERVIEW, group("Academy", ["people", "training", "medical"]), group("Competition", ["competitions", "matches"]), group("Business", ["finance", "analytics"]), SETTINGS],
-  club: [OVERVIEW, group("Club", ["people", "training"]), group("Competition", ["competitions", "matches"]), group("Business", ["finance"]), SETTINGS],
-  coach: [OVERVIEW, group("Squad", ["people", "training", "medical"]), group("Fixtures", ["matches"]), SETTINGS],
+  platform_owner: [OVERVIEW, group("Platform", ["tenants", "governance", "registry", "organisations"]), group("Insights", ["analytics", "finance"]), SETTINGS],
+  federation: [OVERVIEW, group("Governance", ["governance", "registry", "organisations", "people"]), group("Competition", ["competitions", "matches"]), group("Insights", ["analytics"]), SETTINGS],
+  association: [OVERVIEW, group("Region", ["organisations", "people", "registry"]), group("Competition", ["competitions", "matches"]), SETTINGS],
+  academy: [OVERVIEW, group("Academy", ["people", "training", "medical", "registry"]), group("Competition", ["competitions", "matches"]), group("Business", ["finance", "analytics"]), SETTINGS],
+  club: [OVERVIEW, group("Club", ["people", "training", "registry"]), group("Competition", ["competitions", "matches"]), group("Business", ["finance"]), SETTINGS],
+  coach: [OVERVIEW, group("Squad", ["people", "training", "medical", "registry"]), group("Fixtures", ["matches"]), SETTINGS],
   parent: [OVERVIEW, group("Family", ["people", "matches"]), group("Payments", ["finance"]), SETTINGS],
   player: [OVERVIEW, group("Me", ["matches", "training", "performance"]), SETTINGS],
   referee: [OVERVIEW, group("Assignments", ["matches"]), SETTINGS],

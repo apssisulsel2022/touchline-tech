@@ -28,6 +28,7 @@ import { Route as InvitationTokenRouteImport } from './routes/invitation.$token'
 import { Route as AuthenticatedOrganisationsIndexRouteImport } from './routes/_authenticated/organisations.index'
 import { Route as AuthenticatedOrganisationsOrgIdRouteImport } from './routes/_authenticated/organisations.$orgId'
 import { Route as AuthenticatedOrganisationsNewRouteImport } from './routes/_authenticated/organisations.new'
+import { Route as AuthenticatedRegistryIndexRouteImport } from './routes/_authenticated/registry/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -126,6 +127,12 @@ const AuthenticatedOrganisationsNewRoute =
     path: '/organisations/new',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedRegistryIndexRoute =
+  AuthenticatedRegistryIndexRouteImport.update({
+    id: '/registry/',
+    path: '/registry/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/organisations/$orgId': typeof AuthenticatedOrganisationsOrgIdRoute
   '/organisations/new': typeof AuthenticatedOrganisationsNewRoute
   '/organisations/': typeof AuthenticatedOrganisationsIndexRoute
+  '/registry/': typeof AuthenticatedRegistryIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -166,6 +174,7 @@ export interface FileRoutesByTo {
   '/organisations/$orgId': typeof AuthenticatedOrganisationsOrgIdRoute
   '/organisations/new': typeof AuthenticatedOrganisationsNewRoute
   '/organisations': typeof AuthenticatedOrganisationsIndexRoute
+  '/registry': typeof AuthenticatedRegistryIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -188,6 +197,7 @@ export interface FileRoutesById {
   '/_authenticated/organisations/$orgId': typeof AuthenticatedOrganisationsOrgIdRoute
   '/_authenticated/organisations/new': typeof AuthenticatedOrganisationsNewRoute
   '/_authenticated/organisations/': typeof AuthenticatedOrganisationsIndexRoute
+  '/_authenticated/registry/': typeof AuthenticatedRegistryIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -210,6 +220,7 @@ export interface FileRouteTypes {
     | '/organisations/$orgId'
     | '/organisations/new'
     | '/organisations/'
+    | '/registry/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -230,6 +241,7 @@ export interface FileRouteTypes {
     | '/organisations/$orgId'
     | '/organisations/new'
     | '/organisations'
+    | '/registry'
   id:
     | '__root__'
     | '/'
@@ -251,6 +263,7 @@ export interface FileRouteTypes {
     | '/_authenticated/organisations/$orgId'
     | '/_authenticated/organisations/new'
     | '/_authenticated/organisations/'
+    | '/_authenticated/registry/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -402,6 +415,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrganisationsNewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/registry/': {
+      id: '/_authenticated/registry/'
+      path: '/registry'
+      fullPath: '/registry/'
+      preLoaderRoute: typeof AuthenticatedRegistryIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -414,6 +434,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOrganisationsOrgIdRoute: typeof AuthenticatedOrganisationsOrgIdRoute
   AuthenticatedOrganisationsNewRoute: typeof AuthenticatedOrganisationsNewRoute
   AuthenticatedOrganisationsIndexRoute: typeof AuthenticatedOrganisationsIndexRoute
+  AuthenticatedRegistryIndexRoute: typeof AuthenticatedRegistryIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -425,6 +446,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOrganisationsOrgIdRoute: AuthenticatedOrganisationsOrgIdRoute,
   AuthenticatedOrganisationsNewRoute: AuthenticatedOrganisationsNewRoute,
   AuthenticatedOrganisationsIndexRoute: AuthenticatedOrganisationsIndexRoute,
+  AuthenticatedRegistryIndexRoute: AuthenticatedRegistryIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

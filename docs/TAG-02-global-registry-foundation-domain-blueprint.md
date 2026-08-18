@@ -1,10 +1,13 @@
-# TAG-02 — Global Registry Foundation Domain Blueprint
+# TOUCHLINE ENTERPRISE ARCHITECTURE
+## TAG-02 — Global Registry Foundation
+### Artefact 02 — Conceptual Domain Model (DDD)
 
-> This document defines the reusable Global Registry Foundation domain blueprint
-> for Touchline. It is intentionally limited to the shared foundation for
-> permanent identity, verification, governance, and public resolution. It does
-> not implement any individual registry such as Player, Coach, Referee,
-> Organization, or Competition.
+> This document defines the complete conceptual domain model for the Global
+> Registry Foundation within Touchline. It is intentionally technology-neutral,
+> architecture-focused, and limited to the shared foundation for permanent
+> identity, verification, governance, public resolution, and provenance. It does
+> not implement any individual registry, database schema, API contract, or
+> application code.
 
 ---
 
@@ -1536,6 +1539,325 @@ The blueprint is accepted when:
 - No database tables are generated.
 - No UI screens are generated.
 - No API endpoints are generated.
+
+---
+
+## 34. Conceptual Domain Model (DDD)
+
+### 34.1 Domain Purpose
+
+The Global Registry Foundation exists to preserve the integrity of identity as a
+first-class enterprise domain. Its role is not to manage sports operations, but to
+own the canonical rules for identity creation, resolution, verification,
+authority, lineage, visibility, and historical continuity across all registry
+families.
+
+### 34.2 Bounded Context Definition
+
+- Bounded Context Name: Global Registry Foundation
+- Primary Responsibility: govern the canonical lifecycle of registry identities
+  and their trusted relationships to authorities, evidence, visibility, and
+  history.
+- Primary Intent: ensure that every identity within Touchline can be resolved,
+  verified, audited, and governed without ambiguity.
+- Architectural Principle: the foundation must remain policy-centric and
+  technology-agnostic while remaining reusable by child registries.
+
+### 34.3 Shared Kernel Dependencies
+
+The foundation depends on shared services and concepts from adjacent domains, but
+it should not share implementation internals with them. The relationship is one
+of contract-based dependency rather than a shared implementation kernel.
+
+| Shared Concern | Dependency Role | Required Contract |
+| --- | --- | --- |
+| Identity and Access | Dependency | Subject identity, actor identity, authentication context |
+| Tenancy and Organization | Dependency | Jurisdiction, organization context, ownership boundaries |
+| RBAC and Authorization | Dependency | Permission evaluation, authority scope, role context |
+| Workflow | Dependency | Review orchestration, approvals, escalation |
+| Document Service | Dependency | Evidence references, file lifecycle, retention |
+| Audit | Dependency | Immutable event recording and traceability |
+| Search | Dependency | Discoverability, indexing, filtered lookup |
+| Integration Gateway | Dependency | Trusted external references and federation inputs |
+
+### 34.4 Aggregate Boundaries and Consistency Boundaries
+
+| Aggregate | Root | Consistency Boundary | Key Invariants |
+| --- | --- | --- | --- |
+| RegistryDefinition | RegistryDefinition | Registry policy configuration | One canonical policy per registry type |
+| RegistryIdentity | RegistryIdentity | Canonical identity lifecycle | One internal identity, one active canonical state |
+| VerificationCase | VerificationCase | Evidence and review lifecycle | Evidence must remain attributable and non-opaque |
+| DuplicateCase | DuplicateCase | Candidate evaluation and resolution | No irreversible merge from screening alone |
+| MergeCase | MergeCase | Canonical lineage and alias preservation | Canonical record survives, source history remains |
+| AuthorityAssignment | RegistryAuthorityAssignment | Governance scope and delegation | Authority remains within explicit scope |
+| PublicProfile | PublicRegistryProfile | Public visibility and resolution | Public exposure respects policy and status |
+
+### 34.5 Repository Interfaces
+
+Repository interfaces define the persistence contract for the domain without
+committing to a storage mechanism.
+
+- IRegistryDefinitionRepository
+  - load, save, version, listByType
+- IRegistryIdentityRepository
+  - loadById, loadByPublicId, save, markSuspended, markMerged, appendHistory
+- IVerificationCaseRepository
+  - loadForIdentity, save, attachEvidence, closeCase
+- IDuplicateCaseRepository
+  - findCandidates, saveCase, resolveCase
+- IMergeCaseRepository
+  - loadByIdentity, save, executeMerge, reverseMerge
+- IAuthorityAssignmentRepository
+  - loadEffectiveAssignments, saveAssignment, revokeAssignment
+- IPublicProfileRepository
+  - loadProfile, saveVisibility, saveResolutionState
+- IProvenanceRepository
+  - appendProvenance, loadHistory, resolveLineage
+
+### 34.6 Factories
+
+Factories encapsulate the creation of complex aggregates and enforce invariants
+at construction time.
+
+- RegistryDefinitionFactory
+  - creates a definition with policy defaults and lifecycle rules
+- RegistryIdentityFactory
+  - creates a new identity with an internal identifier and initial state
+- VerificationCaseFactory
+  - creates a case linked to an identity and a prescribed policy
+- DuplicateCaseFactory
+  - creates a review case from candidate findings
+- MergeCaseFactory
+  - creates a merge workflow with canonical and source identities
+- PublicProfileFactory
+  - creates a visibility-safe profile representation
+
+### 34.7 Specifications
+
+Specifications express reusable domain predicates for selection and validation.
+
+- ActiveIdentitySpecification
+  - true when the identity is in a non-retired, operational state
+- VerifiedIdentitySpecification
+  - true when the identity has reached the required trust level
+- EligibleForPublicationSpecification
+  - true when the identity is not restricted and visibility policy permits
+- HighRiskMergeSpecification
+  - true when the merge affects sensitive or contested identities
+- DuplicateCandidateSpecification
+  - true when similarity evidence reaches the threshold for review
+- AuthorityScopedActionSpecification
+  - true when an actor is permitted within the relevant jurisdiction and scope
+- EvidenceSufficientSpecification
+  - true when required evidence exists and remains valid
+
+### 34.8 Domain Policies
+
+The foundation is governed by explicit, reusable policies rather than ad hoc
+rules.
+
+- Identifier Policy
+  - issues permanent public identifiers, preserves uniqueness, and prevents reuse
+- Verification Policy
+  - defines the evidence threshold, required trust level, and re-verification conditions
+- Lifecycle Policy
+  - regulates status transitions, legal restrictions, and recovery paths
+- Visibility Policy
+  - determines which identity data may be exposed to which audience
+- Merge Policy
+  - defines when merge is allowed, how canonical records are selected, and how reversal is handled
+- Authority Policy
+  - defines who may register, verify, approve, suspend, or publish a profile
+- Provenance Policy
+  - requires every significant change to retain source, actor, intent, and lineage information
+
+### 34.9 Registry Type Model
+
+Registry Type is a first-class conceptual model that determines how a registry
+behaves without coupling the foundation to specific business domains.
+
+| Aspect | Meaning |
+| --- | --- |
+| Code | Stable registry family code |
+| Family | Category such as person, organization, competition, or facility |
+| Risk Profile | Low, medium, high, or restricted |
+| Required Verification Level | Minimum trust level needed for activation |
+| Visibility Default | Default public visibility policy |
+| Authority Profile | Default authority roles and delegation rules |
+| Lifecycle Profile | Default lifecycle configuration and transition rules |
+| Extension Model | Allowed registry-specific attributes and extensions |
+
+### 34.10 Registry Snapshot Model
+
+A Registry Snapshot is an immutable, point-in-time projection of an identity and
+its governance state. It provides a stable representation for audit,
+comparison, and dispute resolution.
+
+A snapshot contains:
+- identity identity and status
+- effective attribute values
+- verification state and evidence summary
+- authority context
+- visibility state
+- key provenance references
+- effective lifecycle state
+
+Snapshots are not a replacement for the canonical identity; they are evidence of
+its state at a particular time.
+
+### 34.11 Identity Resolution Model
+
+Identity resolution is the process by which the domain determines whether two or
+more claims, records, or evidence sets represent the same underlying subject.
+
+Resolution follows a disciplined sequence:
+1. Candidate generation from identifiers, attributes, and evidence
+2. Match evaluation using allowed matching rules
+3. Conflict analysis for contradictory information
+4. Authority review for high-risk or ambiguous cases
+5. Canonical selection or retention of the existing identity
+6. Merge, aliasing, or separation outcome
+7. Publication of the resolved state and lineage
+
+The model preserves the distinction between:
+- a claimed identity
+- a verified identity
+- a canonical identity
+- a public profile
+
+### 34.12 Visibility Model
+
+Visibility is an explicit domain concept and not merely a UI concern.
+
+| Visibility State | Meaning |
+| --- | --- |
+| Private | Only authorized actors can view the identity attributes |
+| Restricted | Limited visibility to selected audiences or roles |
+| Public | Approved attributes may be exposed publicly |
+| Hidden | Public exposure is disabled while the identity remains known internally |
+| Suspended | Visibility is reduced due to governance or compliance concerns |
+
+A visibility decision must consider:
+- registry type
+- verification level
+- current lifecycle state
+- jurisdictional policy
+- consent requirements
+- public safety or legal constraints
+
+### 34.13 Verification Model
+
+Verification is a trust-building process that converts raw claims into a
+governed, auditable trust position.
+
+The domain model treats verification as a combination of:
+- evidence submission
+- evidence validation
+- authority review
+- trust-level assignment
+- re-verification scheduling
+- claim revision or withdrawal
+
+Verification outcomes are progressive and may be revoked if evidence becomes
+invalid, stale, contradictory, or superseded.
+
+### 34.14 Duplicate Resolution Model
+
+Duplicate resolution is a domain workflow that separates candidate matching from
+final identity resolution.
+
+The model includes:
+- duplicate candidate generation
+- match scoring and rationale
+- case creation for review
+- resolution decision outcomes such as confirm duplicate, reject duplicate, or
+  require more evidence
+- preservation of the original evidence trail
+
+The domain never permits an irreversible merge to be executed solely on the
+basis of machine-generated similarity.
+
+### 34.15 Merge Strategy
+
+Merge strategy defines how identity continuity is preserved when two identities
+are determined to represent the same subject.
+
+Core strategy principles:
+- choose one canonical identity
+- preserve lineage of the source identity
+- retain aliases and historical references
+- prevent identifier reuse
+- preserve provenance and evidence chain
+- allow reversal through a governed workflow
+- treat merge as a controlled business event, not a data overwrite
+
+The merge strategy is intentionally conservative and auditable.
+
+### 34.16 Provenance Model
+
+Provenance is a first-class domain concept that records why and how a value or
+state came to exist.
+
+Every significant event or attribute change must carry:
+- source system or source actor
+- source organization or authority
+- timestamp and validity interval
+- trust classification
+- transformation context
+- prior value references where applicable
+- import or federation lineage where applicable
+
+The provenance model ensures that the domain can answer:
+- where the data came from
+- who introduced it
+- how trustworthy it is
+- whether it has been corrected or superseded
+
+### 34.17 Ownership Rules
+
+Ownership is intentionally separated from mere access.
+
+- The Global Registry Foundation owns the canonical identity model and its
+  governing policies.
+- Child registries own registry-specific extensions, not the core identity
+  lifecycle.
+- Tenants and organizations may own relationships, memberships, claims, or
+  operational contexts, but not the permanent registry identity itself.
+- Authorities own approval actions, not the underlying identity record.
+
+### 34.18 Lifecycle State Machine
+
+The conceptual lifecycle is a governed state machine, not a simple status flag.
+
+Main states:
+- Draft
+- Submitted
+- Pending Screening
+- Pending Verification
+- Under Review
+- Verified
+- Active
+- Restricted
+- Suspended
+- Rejected
+- Merged
+- Superseded
+- Archived
+- Retired
+
+Representative transitions:
+- Draft → Submitted when minimum completeness and policy checks are met
+- Submitted → Pending Screening when screening begins
+- Pending Screening → Pending Verification when no blocking conflict remains
+- Pending Verification → Under Review when a case requires human judgment
+- Pending Verification → Verified when evidence is accepted
+- Verified → Active when activation is authorized
+- Active → Restricted or Suspended when governance or compliance concerns arise
+- Active → Merged when a merge case is approved and executed
+- Merged → Superseded when the canonical lineage changes
+- Active → Archived or Retired when the identity is formally retired
+
+All transitions are guarded by policy, authority, and provenance requirements.
 
 ---
 

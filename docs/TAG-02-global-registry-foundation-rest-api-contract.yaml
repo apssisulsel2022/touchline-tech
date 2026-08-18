@@ -1,0 +1,1038 @@
+openapi: 3.1.0
+info:
+  title: Global Registry Foundation API
+  version: 1.0.0
+  description: >-
+    Enterprise API specification for the Global Registry Foundation.
+    This contract defines resource shapes, commands, queries, pagination,
+    filtering, validation, error handling, and versioning semantics.
+    It is documentation-focused and intentionally excludes implementation code.
+servers:
+  - url: https://api.touchline.example.com
+    description: Production
+  - url: https://staging-api.touchline.example.com
+    description: Staging
+security:
+  - bearerAuth: []
+paths:
+  /v1/registry-identities:
+    get:
+      tags:
+        - Registry Identities
+      summary: List registry identities
+      description: Returns a paginated list of registry identities filtered by scope.
+      operationId: listRegistryIdentities
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/FilterStatus'
+        - $ref: '#/components/parameters/FilterRegistryDefinition'
+        - $ref: '#/components/parameters/FilterVerificationLevel'
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          description: A paginated list of registry identities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistryIdentityListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - Registry Identities
+      summary: Create registry identity
+      description: Creates a new canonical registry identity.
+      operationId: createRegistryIdentity
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRegistryIdentityCommand'
+      responses:
+        '201':
+          description: Registry identity created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistryIdentityResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /v1/registry-identities/{registryIdentityId}:
+    get:
+      tags:
+        - Registry Identities
+      summary: Get registry identity by ID
+      description: Returns the canonical registry identity resource.
+      operationId: getRegistryIdentity
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - name: registryIdentityId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Registry identity retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistryIdentityResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags:
+        - Registry Identities
+      summary: Update registry identity
+      description: Updates a registry identity within approved governance boundaries.
+      operationId: updateRegistryIdentity
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - name: registryIdentityId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRegistryIdentityCommand'
+      responses:
+        '200':
+          description: Registry identity updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistryIdentityResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /v1/registry-identities/{registryIdentityId}/attributes:
+    get:
+      tags:
+        - Identity Attributes
+      summary: List identity attributes
+      description: Returns attributes belonging to a registry identity.
+      operationId: listIdentityAttributes
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - name: registryIdentityId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/FilterAttributeName'
+      responses:
+        '200':
+          description: Attributes returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentityAttributeListResponse'
+  /v1/registry-identities/{registryIdentityId}/identifiers:
+    get:
+      tags:
+        - Identifiers
+      summary: List identifiers
+      description: Returns identifiers assigned to a registry identity.
+      operationId: listIdentifiers
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - name: registryIdentityId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Identifiers returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentifierListResponse'
+  /v1/verification-cases:
+    get:
+      tags:
+        - Verification Cases
+      summary: List verification cases
+      description: Returns pending or historical verification cases.
+      operationId: listVerificationCases
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/FilterStatus'
+        - $ref: '#/components/parameters/FilterRegistryIdentity'
+      responses:
+        '200':
+          description: Verification cases returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationCaseListResponse'
+    post:
+      tags:
+        - Verification Cases
+      summary: Create verification case
+      description: Opens a verification workflow for a registry identity.
+      operationId: createVerificationCase
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVerificationCaseCommand'
+      responses:
+        '201':
+          description: Verification case created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationCaseResponse'
+  /v1/verification-cases/{verificationCaseId}/decisions:
+    post:
+      tags:
+        - Verification Decisions
+      summary: Submit verification decision
+      description: Records the formal decision for a verification case.
+      operationId: submitVerificationDecision
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - name: verificationCaseId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitVerificationDecisionCommand'
+      responses:
+        '201':
+          description: Verification decision recorded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationDecisionResponse'
+  /v1/duplicate-cases:
+    get:
+      tags:
+        - Duplicate Cases
+      summary: List duplicate cases
+      description: Returns duplicate review cases and their status.
+      operationId: listDuplicateCases
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/FilterStatus'
+      responses:
+        '200':
+          description: Duplicate cases returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DuplicateCaseListResponse'
+    post:
+      tags:
+        - Duplicate Cases
+      summary: Create duplicate case
+      description: Opens a duplicate review workflow.
+      operationId: createDuplicateCase
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDuplicateCaseCommand'
+      responses:
+        '201':
+          description: Duplicate case created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DuplicateCaseResponse'
+  /v1/merge-cases:
+    post:
+      tags:
+        - Merge Cases
+      summary: Create merge case
+      description: Initiates a controlled merge workflow.
+      operationId: createMergeCase
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMergeCaseCommand'
+      responses:
+        '201':
+          description: Merge case created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MergeCaseResponse'
+  /v1/public-profiles/{publicProfileId}:
+    get:
+      tags:
+        - Public Profiles
+      summary: Get public profile
+      description: Returns the public-safe profile for an identity.
+      operationId: getPublicProfile
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - name: publicProfileId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Public profile returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicProfileResponse'
+  /v1/search:
+    get:
+      tags:
+        - Search
+      summary: Search registry identities
+      description: Executes a search across registry identities and public-safe profile fields.
+      operationId: searchRegistryIdentities
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 128
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Search results returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    CorrelationId:
+      name: X-Correlation-ID
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 128
+    AcceptLanguage:
+      name: Accept-Language
+      in: header
+      required: false
+      schema:
+        type: string
+        default: en
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 128
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PageSize:
+      name: pageSize
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    Sort:
+      name: sort
+      in: query
+      required: false
+      schema:
+        type: string
+        example: createdAt:desc
+    FilterStatus:
+      name: status
+      in: query
+      required: false
+      schema:
+        type: string
+    FilterRegistryDefinition:
+      name: registryDefinitionId
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+    FilterVerificationLevel:
+      name: verificationLevel
+      in: query
+      required: false
+      schema:
+        type: string
+    FilterAttributeName:
+      name: attributeName
+      in: query
+      required: false
+      schema:
+        type: string
+    FilterRegistryIdentity:
+      name: registryIdentityId
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+    Search:
+      name: q
+      in: query
+      required: false
+      schema:
+        type: string
+        minLength: 2
+        maxLength: 128
+  responses:
+    BadRequest:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Authentication required.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Access forbidden.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: Request conflicts with current state.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ValidationError:
+      description: Input validation failed.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+        - error
+        - correlationId
+        - timestamp
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  issue:
+                    type: string
+        correlationId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    PaginationMeta:
+      type: object
+      required:
+        - page
+        - pageSize
+        - totalItems
+        - totalPages
+      properties:
+        page:
+          type: integer
+          minimum: 1
+        pageSize:
+          type: integer
+          minimum: 1
+        totalItems:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+    RegistryIdentity:
+      type: object
+      required:
+        - id
+        - registryDefinitionId
+        - publicRegistryId
+        - registryStatus
+        - verificationLevel
+        - visibilityLevel
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        registryDefinitionId:
+          type: string
+          format: uuid
+        publicRegistryId:
+          type: string
+        registryStatus:
+          type: string
+        verificationLevel:
+          type: string
+        visibilityLevel:
+          type: string
+        canonicalState:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    RegistryIdentityResponse:
+      type: object
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/RegistryIdentity'
+        meta:
+          type: object
+          properties:
+            correlationId:
+              type: string
+            timestamp:
+              type: string
+              format: date-time
+    RegistryIdentityListResponse:
+      type: object
+      required:
+        - data
+        - pagination
+        - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistryIdentity'
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+        meta:
+          type: object
+          properties:
+            correlationId:
+              type: string
+            timestamp:
+              type: string
+              format: date-time
+    CreateRegistryIdentityCommand:
+      type: object
+      required:
+        - registryDefinitionId
+        - publicRegistryId
+        - verificationLevel
+        - visibilityLevel
+      properties:
+        registryDefinitionId:
+          type: string
+          format: uuid
+        publicRegistryId:
+          type: string
+          minLength: 3
+          maxLength: 128
+        verificationLevel:
+          type: string
+          enum:
+            - unverified
+            - self_declared
+            - document_verified
+            - authority_verified
+            - externally_verified
+            - federation_verified
+        visibilityLevel:
+          type: string
+          enum:
+            - private
+            - restricted
+            - public
+            - hidden
+            - suspended
+        registrationContext:
+          type: object
+          additionalProperties: true
+    UpdateRegistryIdentityCommand:
+      type: object
+      properties:
+        verificationLevel:
+          type: string
+          enum:
+            - unverified
+            - self_declared
+            - document_verified
+            - authority_verified
+            - externally_verified
+            - federation_verified
+        visibilityLevel:
+          type: string
+          enum:
+            - private
+            - restricted
+            - public
+            - hidden
+            - suspended
+        registryStatus:
+          type: string
+    IdentityAttribute:
+      type: object
+      required:
+        - id
+        - name
+        - trustLevel
+        - isCurrent
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        value:
+          oneOf:
+            - type: string
+            - type: object
+              additionalProperties: true
+        trustLevel:
+          type: string
+        isCurrent:
+          type: boolean
+        effectiveFrom:
+          type: string
+          format: date-time
+        effectiveTo:
+          type: string
+          format: date-time
+    IdentityAttributeListResponse:
+      type: object
+      required:
+        - data
+        - pagination
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdentityAttribute'
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+    Identifier:
+      type: object
+      required:
+        - id
+        - value
+        - role
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        value:
+          type: string
+        role:
+          type: string
+        status:
+          type: string
+    IdentifierListResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Identifier'
+    VerificationCase:
+      type: object
+      required:
+        - id
+        - registryIdentityId
+        - status
+        - requiredVerificationLevel
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        registryIdentityId:
+          type: string
+          format: uuid
+        status:
+          type: string
+        requiredVerificationLevel:
+          type: string
+        dueAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    VerificationCaseResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: '#/components/schemas/VerificationCase'
+    VerificationCaseListResponse:
+      type: object
+      required:
+        - data
+        - pagination
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VerificationCase'
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+    CreateVerificationCaseCommand:
+      type: object
+      required:
+        - registryIdentityId
+        - requiredVerificationLevel
+      properties:
+        registryIdentityId:
+          type: string
+          format: uuid
+        requiredVerificationLevel:
+          type: string
+        dueAt:
+          type: string
+          format: date-time
+    SubmitVerificationDecisionCommand:
+      type: object
+      required:
+        - decision
+        - effectiveVerificationLevel
+      properties:
+        decision:
+          type: string
+        effectiveVerificationLevel:
+          type: string
+        reason:
+          type: string
+    VerificationDecision:
+      type: object
+      required:
+        - id
+        - verificationCaseId
+        - decision
+        - effectiveVerificationLevel
+        - decidedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        verificationCaseId:
+          type: string
+          format: uuid
+        decision:
+          type: string
+        effectiveVerificationLevel:
+          type: string
+        decidedAt:
+          type: string
+          format: date-time
+    VerificationDecisionResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: '#/components/schemas/VerificationDecision'
+    DuplicateCase:
+      type: object
+      required:
+        - id
+        - status
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+        reason:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    DuplicateCaseResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: '#/components/schemas/DuplicateCase'
+    DuplicateCaseListResponse:
+      type: object
+      required:
+        - data
+        - pagination
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DuplicateCase'
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+    CreateDuplicateCaseCommand:
+      type: object
+      required:
+        - registryIdentityId
+      properties:
+        registryIdentityId:
+          type: string
+          format: uuid
+        candidateIdentityId:
+          type: string
+          format: uuid
+        reason:
+          type: string
+    MergeCase:
+      type: object
+      required:
+        - id
+        - canonicalIdentityId
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        canonicalIdentityId:
+          type: string
+          format: uuid
+        status:
+          type: string
+        reason:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    MergeCaseResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: '#/components/schemas/MergeCase'
+    CreateMergeCaseCommand:
+      type: object
+      required:
+        - canonicalIdentityId
+        - sourceIdentityIds
+      properties:
+        canonicalIdentityId:
+          type: string
+          format: uuid
+        sourceIdentityIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        reason:
+          type: string
+    PublicProfile:
+      type: object
+      required:
+        - id
+        - registryIdentityId
+        - status
+        - visibilityLevel
+      properties:
+        id:
+          type: string
+          format: uuid
+        registryIdentityId:
+          type: string
+          format: uuid
+        status:
+          type: string
+        visibilityLevel:
+          type: string
+        profileVersion:
+          type: integer
+        fields:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              value:
+                type: string
+    PublicProfileResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: '#/components/schemas/PublicProfile'
+    SearchResponse:
+      type: object
+      required:
+        - data
+        - pagination
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistryIdentity'
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+    ApiExampleRegistryIdentity:
+      type: object
+      example:
+        id: 11111111-2222-4333-8444-555555555555
+        registryDefinitionId: 33333333-4444-4555-8666-777777777777
+        publicRegistryId: REG-1001
+        registryStatus: active
+        verificationLevel: authority_verified
+        visibilityLevel: public
+        canonicalState: canonical
+        createdAt: '2026-07-31T12:00:00Z'
+        updatedAt: '2026-07-31T12:30:00Z'
+  examples:
+    RegistryIdentityExample:
+      value:
+        id: 11111111-2222-4333-8444-555555555555
+        registryDefinitionId: 33333333-4444-4555-8666-777777777777
+        publicRegistryId: REG-1001
+        registryStatus: active
+        verificationLevel: authority_verified
+        visibilityLevel: public
+        canonicalState: canonical
+        createdAt: '2026-07-31T12:00:00Z'
+        updatedAt: '2026-07-31T12:30:00Z'
+
+x-api-info:
+  resources:
+    - Registry Identity
+    - Identity Attribute
+    - Identifier
+    - Verification Case
+    - Duplicate Case
+    - Merge Case
+    - Public Profile
+    - Search
+  commands:
+    - CreateRegistryIdentityCommand
+    - UpdateRegistryIdentityCommand
+    - CreateVerificationCaseCommand
+    - SubmitVerificationDecisionCommand
+    - CreateDuplicateCaseCommand
+    - CreateMergeCaseCommand
+  queries:
+    - ListRegistryIdentities
+    - GetRegistryIdentity
+    - ListIdentityAttributes
+    - ListIdentifiers
+    - ListVerificationCases
+    - SearchRegistryIdentities
+  standards:
+    - Correlation ID required on every request
+    - Idempotency key supported for mutating operations
+    - Pagination required for list endpoints
+    - Filtering and sorting supported for list endpoints
+    - Validation errors returned as structured problem details
+    - Versioning uses URI-based /v1/ prefix
